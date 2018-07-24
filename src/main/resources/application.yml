@@ -1,0 +1,60 @@
+spring:
+    profiles:
+        active: development
+    output:
+        ansi:
+            enabled: ALWAYS
+server:
+    port: 8000
+app:
+    token:
+        signature-algorithm: RS512
+        expiration-time: 1800_000
+    singpass:
+        identity-provider:
+            artifact-lifetime-clock-skew: 60_000
+---
+
+spring:
+    profiles: development
+app:
+    homepage-url: http://localhost:3000/
+    instrumentation:
+        zipkin:
+            env: dev
+    singpass:
+        service-provider:
+            login-url: http://localhost:4000/login
+    corppass:
+        service-provider:
+            login-url: http://localhost:4000/login
+
+---
+
+spring:
+    profiles: production
+app:
+    homepage-url: https://www.mysite.sg/
+    instrumentation:
+        zipkin:
+            env: prod
+    singpass:
+        service-provider:
+            login-url: https://api.mysite.sg/login
+            metadata-path: /app/shared/metadata/sp_singpass.xml
+            metadata-id: SpSingpass
+        identity-provider:
+            host: saml.singpass.gov.sg
+            service-id: SERVICE-ID-SP-2FA
+            metadata-path: /app/shared/metadata/idp_singpass.xml
+            metadata-id: IdpSingpass
+    corppass:
+        service-provider:
+            login-url: https://api.mysite.sg/login
+            metadata-path: /app/shared/metadata/sp_corppass.xml
+            metadata-id: SpCorppass
+        identity-provider:
+            host: saml.corppass.gov.sg
+            service-id: SERVICE-ID-CP-2FA
+            metadata-path: /app/shared/metadata/idp_corppass.xml
+            metadata-id: IdpCorppass

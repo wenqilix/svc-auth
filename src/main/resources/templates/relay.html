@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>Callback</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+
+    <style>
+        body{
+            background: #eee;
+            height: 100vh;
+        }
+
+        .container {
+            height: 100vh;
+            display:flex;
+        }
+
+        .loaderwrapper {
+            margin: auto auto;
+            min-width: 250px;
+        }
+        
+        @keyframes loader {
+            0% {
+            width: 0;
+            margin-left: 0;
+            }
+
+            50% {
+            width: 30%;
+            margin-left: 50%;
+            }
+
+            100% {
+            width: 40%;
+            margin-left: 100%;
+            }
+        }
+
+        @-webkit-keyframes loader {
+            0% {
+            width: 0;
+            margin-left: 0;
+            }
+
+            50% {
+            width: 30%;
+            margin-left: 50%;
+            }
+
+            100% {
+            width: 40%;
+            margin-left: 100%;
+            }
+        }
+
+        .progress-bar {
+            overflow: hidden;
+            width: 100%;
+            background: #fff;
+            /* max-width: 40%; */
+            /* position: absolute; */
+        }
+
+        .progress-bar span {
+            display: block;
+        }
+
+        .bar {
+            background: rgba(255, 255, 255, 0.3);
+            width: 100%;
+        }
+
+        .progress {
+            animation: loader 1s ease infinite;
+            -webkit-animation: loader 1s ease infinite;
+            height: 2px;
+            background: #D5008F;
+            box-shadow: 0 0 40px rgba(0, 0, 0, .1);
+        }
+
+        .logotype {
+            color: #ccc;
+            margin: auto auto; 
+            font-family: 'Open Sans', "Mada", "Ubuntu", Helvetica, Arial, sans-serif;
+            text-align: center;
+            display:block;
+            padding-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .dn {
+            display: none;
+        }
+    </style>
+</head>
+<body onload="document.forms[0].submit()">
+<div class="container">
+    <form th:object="${model}" method="POST" role="form" th:action="@{${model.postUrl}}">
+
+        <input type="hidden" th:field="*{token}" />
+        <input type="hidden" th:field="*{relayState}" />
+
+        <button type="submit" class="dn">Submit</button>
+    </form>
+    
+    <section class="loaderwrapper">
+        <span class="logotype">Loading...</span>
+        <div class="progress-bar">
+          <span class="bar">
+            <span class="progress"></span>
+          </span>
+        </div>
+    </section>
+</div>
+</body>
+</html>

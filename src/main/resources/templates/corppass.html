@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>Corppass Login</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous" />
+    <style>
+        input#uen:checked ~ .uen-type {
+            display: block;
+        }
+        input#uen:checked ~ .nonuen-type {
+            display: none;
+        }
+
+        input#nonuen:checked ~ .uen-type {
+            display: none;
+        }
+        input#nonuen:checked ~ .nonuen-type {
+            display: block;
+        }
+
+        input#thirdParty:not(:checked) ~ .third-party {
+            display: none;
+        }
+        input#thirdParty:checked ~ .third-party {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h1>Corppass</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+            <form th:object="${userInfo}" method="POST" role="form" th:action="@{/cp/cb}">
+                <input type="hidden" name="RelayState" id="RelayState" th:value="${target}" />
+                <input type="hidden" name="authAccessState" th:value="${authAccess.toJson()}" />
+                <input type="hidden" name="thirdPartyAuthAccessState" th:value="${thirdPartyAuthAccess.toJson()}" />
+                <button type="submit" class="btn btn-primary sticky-top float-right">Log In</button>
+                <legend>Login</legend>
+                <div class="form-group">
+                    <label for="accountType" class="col-form-label">Account Type</label>
+                    <select th:field="*{accountType}" class="form-control"
+                            id="accountType">
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+
+                    <input type="checkbox" class="form-check-label"
+                            id="singpassHolder" th:field="*{singpassHolder}" />
+                    <label for="singpassHolder" class="col-form-label-sm">Singpass Holder</label>
+
+                    <label for="entityId" class="col-form-label d-block">Entity ID (UEN)</label>
+                    <input type="text" class="form-control"
+                            id="entityId" placeholder="e.g. R90SS0001A"
+                            th:field="*{entityId}" required></input>
+
+                    <label for="userName" class="col-form-label">UserName</label>
+                    <input type="text" class="form-control"
+                            id="userName" placeholder="e.g. CP192"
+                            th:field="*{userName}" required></input>
+
+                    <label for="userId" class="col-form-label">User ID (NRIC, Passport Number)</label>
+                    <input type="text" class="form-control"
+                            id="userId" placeholder="e.g. S1234567D"
+                            th:field="*{userId}" required></input>
+
+                    <label for="userFullName" class="col-form-label">User Full Name</label>
+                    <input type="text" class="form-control"
+                            id="userFullName" placeholder="e.g. John Grisham"
+                            th:field="*{userFullName}" required></input>
+
+                    <label for="userCountry" class="col-form-label">User Country</label>
+                    <input type="text" class="form-control"
+                            id="userCountry" placeholder="e.g. SG" maxlength="2"
+                            th:field="*{userCountry}" required></input>
+
+                    <label for="entityType" class="col-form-label">Entity Type</label>
+                    <input type="radio" class="form-check-label"
+                            id="uen" value="UEN" th:field="*{entityType}"></input>
+                    <label class="col-form-label-sm mr-5" for="uen">UEN</label>
+                    <input type="radio" class="form-check-label"
+                          id="nonuen" value="NON-UEN" th:field="*{entityType}"></input>
+                    <label class="col-form-label-sm" for="nonuen">NON-UEN</label>
+
+                    <div class="form-group uen-type">
+                        <label for="entityStatus" class="col-form-label">Entity Status</label>
+                        <select th:field="*{entityStatus}" class="form-control"
+                                id="entityStatus">
+                            <option value="Registered">Registered</option>
+                            <option value="De-Registered">De-Registered</option>
+                            <option value="Withdrawn">Withdrawn</option>
+                        </select>
+                    </div>
+                    <div class="form-group nonuen-type">
+                        <label for="entityRegNo" class="col-form-label">Entity Reg No.</label>
+                        <input type="text" class="form-control"
+                                id="entityRegNo" placeholder="e.g. 999999999"
+                                th:field="*{entityRegNo}"></input>
+                        <label for="entityCountry" class="col-form-label">Entity Country</label>
+                        <input type="text" class="form-control"
+                                id="entityCountry" placeholder="e.g. CO" maxlength="2"
+                                th:field="*{entityCountry}"></input>
+                        <label for="entityName" class="col-form-label">Entity Name</label>
+                        <input type="text" class="form-control"
+                                id="entityName" placeholder="e.g. JUAN VALDEZ"
+                                th:field="*{entityName}"></input>
+                    </div>
+                </div>
+            </form>
+
+            <form th:object="${auth}" method="POST" role="form" th:action="@{/cp/role}">
+                <input type="hidden" name="target" th:value="${target}" />
+                <input type="hidden" name="userInfoState" th:value="${userInfo.toJson()}" />
+                <input type="hidden" name="authAccessState" th:value="${authAccess.toJson()}" />
+                <input type="hidden" name="thirdPartyAuthAccessState" th:value="${thirdPartyAuthAccess.toJson()}" />
+                <input type="hidden" name="userListState" th:value="${userList.toJson()}" />
+                <legend>Role</legend>
+                <table class="table table-sm table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Third Party</th>
+                        <th scope="col">Sub-entity ID</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:unless="${#lists.isEmpty(authAccess.auths)}">
+                        <tr th:each="auth, authStat : ${authAccess.auths}">
+                            <td>-</td>
+                            <td th:text="${auth.subEntityId}">
+                            </td>
+                            <td th:text="${auth.role}">
+                            </td>
+                            <td th:text="${auth.startDate}">
+                            </td>
+                            <td th:text="${auth.endDate}">
+                            </td>
+                            <td>
+                            <button type="submit" class="btn btn-secondary" name="remove" th:value="${authStat.index}">Remove</button>
+                            </td>
+                        </tr>
+                    </th:block>
+                    <th:block th:unless="${#lists.isEmpty(thirdPartyAuthAccess.clients)}">
+                        <th:block th:each="client, clientStat : ${thirdPartyAuthAccess.clients}">
+                            <tr th:unless="${#lists.isEmpty(client.auths)}"
+                                th:each="auth, authStat : ${client.auths}">
+                                <td th:text="${client.entityId}+' ('+${client.entityType}+')'"></td>
+                                <td th:text="${auth.subEntityId}">
+                                </td>
+                                <td th:text="${auth.role}">
+                                </td>
+                                <td th:text="${auth.startDate}">
+                                </td>
+                                <td th:text="${auth.endDate}">
+                                </td>
+                                <td>
+                                <button type="submit" class="btn btn-secondary" name="remove" th:value="${clientStat.count*1000}+${authStat.index}">Remove</button>
+                                </td>
+                            </tr>
+                        </th:block>
+                    </th:block>
+                    </tbody>
+                </table>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label for="subEntityId" class="col-form-label">Sub-entity ID</label>
+                        <input type="text" class="form-control" id="subEntityId"
+                                th:field="*{subEntityId}"></input>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="role" class="col-form-label">Role</label>
+                        <input type="text" class="form-control" id="role"
+                                th:field="*{role}"></input>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label for="startDate" class="col-form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate"
+                                th:field="*{startDate}"></input>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endDate" class="col-form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate"
+                                th:field="*{endDate}"></input>
+                    </div>
+                </div>
+                <input type="checkbox" class="form-check-label"
+                        id="thirdParty" name="thirdParty" />
+                <label for="thirdParty" class="col-form-label-sm">Third Party</label>
+                <div class="form-row third-party">
+                    <div class="form-group col-md-6">
+                        <label for="clientEntityId" class="col-form-label">Client Entity ID</label>
+                        <input type="text" class="form-control"
+                                id="clientEntityId" name="clientEntityId"></input>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="clientEntityType" class="col-form-label">Client Entity Type</label>
+                        <select class="form-control" id="clientEntityType" name="clientEntityType">
+                            <option value="UEN">UEN</option>
+                            <option value="NON-UEN">NON-UEN</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row justify-content-end">
+                    <button type="submit" class="btn btn-secondary" name="add">Add Role</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <form th:object="${userList}" method="POST" role="form" th:action="@{/cp/userInfo}">
+                <input type="hidden" name="target" th:value="${target}" />
+                <input type="hidden" name="authAccessState" th:value="${authAccess.toJson()}" />
+                <input type="hidden" name="thirdPartyAuthAccessState" th:value="${thirdPartyAuthAccess.toJson()}" />
+                <input type="hidden" name="userListState" th:value="${userList.toJson()}" />
+                <table class="table table-striped" th:unless="*{#lists.isEmpty(userInfos)}">
+                    <thead>
+                    <tr>
+                        <th scope="col">Entity ID</th>
+                        <th scope="col">User ID</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="userInfo, userInfoStat : *{userInfos}">
+                        <td th:text="${userInfo.entityId}" />
+                        <td th:text="${userInfo.userId}" />
+                        <td>
+                            <button type="submit" class="btn btn-secondary" name="select" th:value="${userInfoStat.index}">Select</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

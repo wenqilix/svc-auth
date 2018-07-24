@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>Singpass Login</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous" />
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h1>Singpass</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <form th:object="${user}" method="GET" role="form" th:action="@{/sp/cb}">
+                <input type="hidden" name="RelayState" id="RelayState" th:value="${target}" />
+                <legend>Login</legend>
+
+                <div class="form-group">
+                    <label for="userName"></label>
+                    <input type="text" class="form-control"
+                           name="userName" id="userName"
+                           placeholder="User Name"
+                           th:field="*{userName}"></input>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>Error</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+
+    <style>
+        body{
+            background: #eee;
+            height: 100vh;
+            font-family: 'Open Sans', "Mada", "Ubuntu", Helvetica, Arial, sans-serif;
+        }
+
+        .container {
+            height: 100vh;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .robot-notfound {
+            background-image: url('/images/notfound.png');
+            width: 100%;
+            height: 180px;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position-x: 50%;
+            margin-bottom: 14px;
+        }
+
+        .error-title {
+            color: #5e2ca5;
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+        .subtitle-link {
+            color:#357edd;
+            font-size: 1.125rem;
+            font-weight: 400;
+        }
+        .subtitle {
+            color:rgba(0,0,0,.6);
+            font-size: 1rem;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container" th:if="${status == 404}">
+    <i class="robot-notfound"></i>
+    <h1 class="error-title" id="title">Sorry, we can't find the page you're looking for.</h1>
+    <a th:href="${@properties.homepageUrl}" class="subtitle-link">Go back to homepage</a>
+</div>
+<div class="container" th:unless="${status == 404}">
+    <i class="robot-notfound"></i>
+    <h1 class="error-title" id="title">Something went wrong and we're working to fix it.</h1>
+    <p class="subtitle" id="subtitle">Please try again later</p>
+</div>
+</body>
+</html>
