@@ -29,14 +29,14 @@ class DevelopmentController {
     @GetMapping("/login")
     fun login(model: Model, @RequestParam(value="target", required=false) target: String?): String {
         model.addAttribute("user", User())
-        model.addAttribute("target", target ?: "")
+        model.addAttribute("target", target ?: properties.singpass!!.homepageUrl)
 
         return "singpass"
     }
  
     @GetMapping("/cb")
     fun callback(user: User, model: Model, @RequestParam(value="RelayState") relayState: String): String {
-        val token: String = jwt.build(user.toMap())
+        val token: String = jwt.buildSingpass(user.toMap())
 
         model.addAttribute("model", object {
             val postUrl: String = properties.singpass!!.serviceProvider!!.loginUrl
@@ -67,7 +67,7 @@ class ProductionController {
             .queryParam("RequestBinding", "HTTPArtifact")
             .queryParam("ResponseBinding", "HTTPArtifact")
             .queryParam("PartnerId", ServiceProvider.Singpass.ENTITY_ID)
-            .queryParam("Target", target ?: properties.homepageUrl)
+            .queryParam("Target", target ?: properties.singpass!!.homepageUrl)
             .queryParam("NameIdFormat", "Email")
             .queryParam("esrvcID", idp.serviceId)
             .build()
@@ -81,7 +81,7 @@ class ProductionController {
             val resolved = ArtifactResolver.resolveArtifact(artifactId, request, properties.singpass!!, ServiceProvider.Singpass, IdentityProvider.Singpass)
             val user = User(resolved)
 
-            val token: String = jwt.build(user.toMap())
+            val token: String = jwt.buildSingpass(user.toMap())
 
             model.addAttribute("model", object {
                 val postUrl: String = properties.singpass!!.serviceProvider!!.loginUrl

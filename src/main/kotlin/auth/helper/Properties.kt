@@ -12,7 +12,6 @@ class Properties: ApplicationContextAware {
     var singpass: Provider? = null
     var corppass: Provider? = null
     var instrumentation: Instrumentation? = null
-    lateinit var homepageUrl: String
     
     companion object {
         lateinit private var applicationContext: ApplicationContext
@@ -43,6 +42,7 @@ class Token {
 }
 
 class Provider {
+    lateinit var homepageUrl: String
     var mockUserListUrl: String? = null
     var serviceProvider: ServiceProvider? = null
     var identityProvider: IdentityProvider? = null

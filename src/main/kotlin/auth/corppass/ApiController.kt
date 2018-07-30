@@ -27,11 +27,11 @@ class ApiController {
         val body = HashMap<String, Any?>()
         try {
             val token = bearerToken.replace("Bearer ", "")
-            val attributes: Map<String, Any> = jwt.parse(token)
+            val attributes: Map<String, Any> = jwt.parseCorppass(token)
             val user: User = User(attributes)
 
             val headers: HttpHeaders = HttpHeaders()
-            headers.add(HEADER_STRING, jwt.build(user.toMap()))
+            headers.add(HEADER_STRING, jwt.buildCorppass(user.toMap()))
 
             body.put("success", true)
 

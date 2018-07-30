@@ -18,14 +18,15 @@ app:
 spring:
     profiles: development
 app:
-    homepage-url: http://localhost:3000/
     instrumentation:
         zipkin:
             env: dev
     singpass:
+        homepage-url: http://localhost:3000/
         service-provider:
             login-url: http://localhost:4000/login
     corppass:
+        homepage-url: http://localhost:3001/
         service-provider:
             login-url: http://localhost:4000/login
 
@@ -34,11 +35,11 @@ app:
 spring:
     profiles: production
 app:
-    homepage-url: https://www.mysite.sg/
     instrumentation:
         zipkin:
             env: prod
     singpass:
+        homepage-url: https://www.mysite.sg/
         service-provider:
             login-url: https://api.mysite.sg/login
             metadata-path: /app/shared/metadata/sp_singpass.xml
@@ -49,6 +50,7 @@ app:
             metadata-path: /app/shared/metadata/idp_singpass.xml
             metadata-id: IdpSingpass
     corppass:
+        homepage-url: https://corp.mysite.sg/
         service-provider:
             login-url: https://api.mysite.sg/login
             metadata-path: /app/shared/metadata/sp_corppass.xml

@@ -43,7 +43,7 @@ class DevelopmentController {
         model.addAttribute("authAccess", AuthAccess())
         model.addAttribute("thirdPartyAuthAccess", ThirdPartyAuthAccess())
         model.addAttribute("auth", Auth())
-        model.addAttribute("target", target ?: "")
+        model.addAttribute("target", target ?: properties.corppass!!.homepageUrl)
 
         return "corppass"
     }
@@ -71,7 +71,7 @@ class DevelopmentController {
         thirdPartyAuthAccess.entityStatus = userInfo.entityStatus
         thirdPartyAuthAccess.entityType = userInfo.entityType
 
-        val token: String = jwt.build(User(userInfo, authAccess, thirdPartyAuthAccess).toMap())
+        val token: String = jwt.buildCorppass(User(userInfo, authAccess, thirdPartyAuthAccess).toMap())
 
         model.addAttribute("model", object {
             val postUrl: String = properties.corppass!!.serviceProvider!!.loginUrl
@@ -207,7 +207,7 @@ class ProductionController {
             .queryParam("RequestBinding", "HTTPArtifact")
             .queryParam("ResponseBinding", "HTTPArtifact")
             .queryParam("PartnerId", ServiceProvider.Corppass.ENTITY_ID)
-            .queryParam("Target", target ?: properties.homepageUrl)
+            .queryParam("Target", target ?: properties.corppass!!.homepageUrl)
             .queryParam("NameIdFormat", "Email")
             .queryParam("esrvcID", idp.serviceId)
             .build()
@@ -221,7 +221,7 @@ class ProductionController {
             val resolved = ArtifactResolver.resolveArtifact(artifactId, request, properties.corppass!!, ServiceProvider.Corppass, IdentityProvider.Corppass)
             val user = DocumentBuilder.parse<User>(resolved.entries.single().value as String, "User")
 
-            val token: String = jwt.build(user.toMap())
+            val token: String = jwt.buildCorppass(user.toMap())
 
             model.addAttribute("model", object {
                 val postUrl: String = properties.corppass!!.serviceProvider!!.loginUrl

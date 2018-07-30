@@ -41,18 +41,36 @@ class Jwt {
         Cryptography.generatePublic(publicKey)
     }
 
-    fun build(claims: Map<String, Any>): String {
+    fun build(issuer: String, claims: Map<String, Any>): String {
         return Jwts.builder()
+            .setIssuer(issuer)
             .addClaims(claims)
             .setExpiration(Date(System.currentTimeMillis() + this.token.expirationTime))
             .signWith(SignatureAlgorithm.forName(this.token.signatureAlgorithm), this.signingKey)
             .compact()
     }
 
-    fun parse(jwt: String): Map<String, Any> {
+    fun buildSingpass(claims: Map<String, Any>): String {
+        return this.build("Singpass", claims)
+    }
+
+    fun buildCorppass(claims: Map<String, Any>): String {
+        return this.build("Corppass", claims)
+    }
+
+    fun parse(issuer: String, jwt: String): Map<String, Any> {
         return Jwts.parser()
+            .requireIssuer(issuer)
             .setSigningKeyResolver(signingKeyResolver)
             .parseClaimsJws(jwt)
             .getBody()
+    }
+
+    fun parseSingpass(jwt: String): Map<String, Any> {
+        return this.parse("Singpass", jwt)
+    }
+
+    fun parseCorppass(jwt: String): Map<String, Any> {
+        return this.parse("Corppass", jwt)
     }
 }

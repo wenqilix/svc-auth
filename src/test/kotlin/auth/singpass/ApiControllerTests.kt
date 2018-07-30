@@ -46,7 +46,7 @@ class ApiControllerUnitTests {
     @Test
     fun refresh() {
         val validToken = "valid.token.value"
-        Mockito.`when`(mockJwt.parse(validToken)).thenReturn(mapOf("userName" to "foo", "mobile" to "bar"))
+        Mockito.`when`(mockJwt.parseSingpass(validToken)).thenReturn(mapOf("userName" to "foo", "mobile" to "bar"))
 
         val result = apiController.refresh("Bearer ${validToken}")
         assertNotNull(result)
@@ -58,8 +58,8 @@ class ApiControllerUnitTests {
     fun refreshWithInvalidToken() {
         val invalidToken = "general.invalid.token"
         val invalidJWTToken = "jwt.invalid.token"
-        Mockito.`when`(mockJwt.parse(invalidToken)).thenThrow(RuntimeException())
-        Mockito.`when`(mockJwt.parse(invalidJWTToken)).thenThrow(JwtException("error"))
+        Mockito.`when`(mockJwt.parseSingpass(invalidToken)).thenThrow(RuntimeException())
+        Mockito.`when`(mockJwt.parseSingpass(invalidJWTToken)).thenThrow(JwtException("error"))
 
         var result = apiController.refresh(invalidToken)
         assertNotNull(result)

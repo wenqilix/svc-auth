@@ -53,7 +53,8 @@
 <div class="container" th:if="${status == 404}">
     <i class="robot-notfound"></i>
     <h1 class="error-title" id="title">Sorry, we can't find the page you're looking for.</h1>
-    <a th:href="${@properties.homepageUrl}" class="subtitle-link">Go back to homepage</a>
+    <a  th:href="${#strings.contains(path,'/cp/')} ? ${@properties.corppass.homepageUrl} : ${@properties.singpass.homepageUrl}"
+        class="subtitle-link">Go back to homepage</a>
 </div>
 <div class="container" th:unless="${status == 404}">
     <i class="robot-notfound"></i>
