@@ -23,7 +23,6 @@
 |                                                                |                                                        |
 |----------------------------------------------------------------|--------------------------------------------------------|
 | SPRING_PROFILES_ACTIVE                                         | specify which Environment are active.                  |
-| APP_HOMEPAGE_URL                                               | Homepage of the app using svc-auth                     |
 | **`Zipkin`**                                                   |                                                        |
 | APP_INSTRUMENTATION_ZIPKIN_URL                                 | The hostname to the Zipkin server. For example, if you normally access the Zipkin server API at `https://zipkin.yourdomain.com/api/v1/spans`, specify the value as `https://zipkin.yourdomain.com`. |
 | APP_INSTRUMENTATION_ZIPKIN_ENV                                 | Specifies the environment of the application. When this is specified ,it is appended to the service name for identification in the Zipkin UI. For example, if `"development"` is specified as the value, the resultant service name in Zipkin UI will be `"svc-auth-development"`. |
@@ -32,6 +31,7 @@
 | APP_TOKEN_SIGNATURE_ALGORITHM                                  | Signature Algorithm used to sign Jwt. Only support RSA algo |
 | APP_TOKEN_EXPIRATION_TIME                                      | How many milliseconds will the Jwt be valid for        |
 | **`Singpass`**                                                 |                                                        |
+| APP_SINGPASS_HOMEPAGE_URL                                      | Homepage of the app using svc-auth for singpass        |
 | APP_SINGPASS_SERVICE_PROVIDER_PRIVATE_KEY                      | Private key(pcks8 format) used by svc-auth to sign during artifact resolve and decrypt assertion |
 | APP_SINGPASS_SERVICE_PROVIDER_METADATA_PATH                    | Service provider metadata file path                    |
 | APP_SINGPASS_SERVICE_PROVIDER_METADATA_ID                      | ID to differiate between different service provider metadata |
@@ -46,19 +46,20 @@
 | APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PASSWORD | Whitelisted proxy password to resolve artifact with Singpass |
 | APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_LIFETIME_CLOCK_SKEW    | Allowed time different to validate resolved artifact lifetime |
 | **`Corppass`**                                                 |                                                        |
-| APP_CORPPASS_SERVICE_PROVIDER_PRIVATE_KEY                      | Same as Singpass                                       |
-| APP_CORPPASS_SERVICE_PROVIDER_METADATA_PATH                    | Same as Singpass                                       |
-| APP_CORPPASS_SERVICE_PROVIDER_METADATA_ID                      | Same as Singpass                                       |
-| APP_CORPPASS_SERVICE_PROVIDER_LOGIN_URL                        | Same as Singpass                                       |
-| APP_CORPPASS_IDENTITY_PROVIDER_HOST                            | Same as Singpass                                       |
-| APP_CORPPASS_IDENTITY_PROVIDER_SERVICE_ID                      | Same as Singpass                                       |
-| APP_CORPPASS_IDENTITY_PROVIDER_METADATA_PATH                   | Same as Singpass                                       |
-| APP_CORPPASS_IDENTITY_PROVIDER_METADATA_ID                     | Same as Singpass                                       |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_HOST     | Same as Singpass                                       |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PORT     | Same as Singpass                                       |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_USERNAME | Same as Singpass                                       |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PASSWORD | Same as Singpass                                       |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_LIFETIME_CLOCK_SKEW    | Same as Singpass                                       |
+| APP_CORPPASS_HOMEPAGE_URL                                      | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_SERVICE_PROVIDER_PRIVATE_KEY                      | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_SERVICE_PROVIDER_METADATA_PATH                    | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_SERVICE_PROVIDER_METADATA_ID                      | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_SERVICE_PROVIDER_LOGIN_URL                        | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_IDENTITY_PROVIDER_HOST                            | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_IDENTITY_PROVIDER_SERVICE_ID                      | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_IDENTITY_PROVIDER_METADATA_PATH                   | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_IDENTITY_PROVIDER_METADATA_ID                     | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_HOST     | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PORT     | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_USERNAME | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PASSWORD | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_LIFETIME_CLOCK_SKEW    | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_MOCK_USER_LIST_URL                                | Url to get a list of mock corppass users' info (dev, qa only) |
 
 
