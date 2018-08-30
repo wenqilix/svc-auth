@@ -19,8 +19,12 @@ import auth.saml.artifact.ArtifactResolver
 import auth.saml.credentials.ServiceProvider
 import auth.saml.credentials.IdentityProvider
 import auth.helper.xml.DocumentBuilder
-import auth.corppass.model.*
-import auth.corppass.model.auth.*
+import auth.corppass.model.User
+import auth.corppass.model.UserInfo
+import auth.corppass.model.AuthAccess
+import auth.corppass.model.ThirdPartyAuthAccess
+import auth.corppass.model.auth.Auth
+import auth.corppass.model.auth.ThirdPartyClient
 import auth.corppass.model.mock.UserList
 
 @Controller("corppassController")
@@ -82,24 +86,33 @@ class DevelopmentController {
         return "relay"
     }
 
+    private fun populateModelState(model: Model, params: Map<String, String>) {
+        val mapper = ObjectMapper()
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        if (!params.get("userInfoState").isNullOrEmpty()) {
+            model.addAttribute("userInfo", mapper.readValue(params.get("userInfoState"), UserInfo::class.java))
+        }
+        model.addAttribute("userList", mapper.readValue(params.get("userListState"), UserList::class.java))
+        model.addAttribute("authAccess", mapper.readValue(params.get("authAccessState"), AuthAccess::class.java))
+        model.addAttribute(
+            "thirdPartyAuthAccess",
+            mapper.readValue(params.get("thirdPartyAuthAccessState"), ThirdPartyAuthAccess::class.java)
+        )
+        model.addAttribute("target", params.get("target"))
+    }
+
     @PostMapping("/role", params=["add"])
     fun addRole(
         auth: Auth, model: Model,
         @RequestParam(value="thirdParty", required=false) thirdParty: Boolean?,
-        @RequestParam(value="clientEntityId") clientEntityId: String,
-        @RequestParam(value="clientEntityType") clientEntityType: String,
-        @RequestParam(value="target") target: String,
-        @RequestParam(value="userInfoState") userInfoState: String,
-        @RequestParam(value="authAccessState") authAccessState: String,
-        @RequestParam(value="thirdPartyAuthAccessState") thirdPartyAuthAccessState: String,
-        @RequestParam(value="userListState") userListState: String
+        @RequestParam requestParams: Map<String, String>
     ): String {
-        val mapper = ObjectMapper()
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        val userInfo = mapper.readValue(userInfoState, UserInfo::class.java)
-        val authAccess = mapper.readValue(authAccessState, AuthAccess::class.java)
-        val thirdPartyAuthAccess = mapper.readValue(thirdPartyAuthAccessState, ThirdPartyAuthAccess::class.java)
-        val userList = mapper.readValue(userListState, UserList::class.java)
+        populateModelState(model, requestParams)
+
+        val thirdPartyAuthAccess = model.asMap().get("thirdPartyAuthAccess") as ThirdPartyAuthAccess
+        val authAccess = model.asMap().get("authAccess") as AuthAccess
+        val clientEntityId = requestParams.getOrDefault("clientEntityId", "")
+        val clientEntityType = requestParams.getOrDefault("clientEntityType", "")
 
         if (thirdParty != null && thirdParty) {
             val clientIndex = thirdPartyAuthAccess.clients.indexOfFirst {
@@ -116,12 +129,9 @@ class DevelopmentController {
             authAccess.auths.add(auth)
         }
 
-        model.addAttribute("userList", userList)
-        model.addAttribute("userInfo", userInfo)
         model.addAttribute("authAccess", authAccess)
         model.addAttribute("thirdPartyAuthAccess", thirdPartyAuthAccess)
         model.addAttribute("auth", Auth())
-        model.addAttribute("target", target)
 
         return "corppass"
     }
@@ -130,59 +140,55 @@ class DevelopmentController {
     fun removeRole(
         model: Model,
         @RequestParam(value="remove") index: Int,
-        @RequestParam(value="target") target: String,
-        @RequestParam(value="userInfoState") userInfoState: String,
-        @RequestParam(value="authAccessState") authAccessState: String,
-        @RequestParam(value="thirdPartyAuthAccessState") thirdPartyAuthAccessState: String,
-        @RequestParam(value="userListState") userListState: String
+        @RequestParam requestParams: Map<String, String>
     ): String {
-        val mapper = ObjectMapper()
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        val userInfo = mapper.readValue(userInfoState, UserInfo::class.java)
-        val authAccess = mapper.readValue(authAccessState, AuthAccess::class.java)
-        val thirdPartyAuthAccess = mapper.readValue(thirdPartyAuthAccessState, ThirdPartyAuthAccess::class.java)
-        val userList = mapper.readValue(userListState, UserList::class.java)
+        populateModelState(model, requestParams)
 
-        var auths = authAccess.auths
-        if (index >= 1000) {
-            val clientIndex = (index/1000) - 1
-            auths = thirdPartyAuthAccess.clients.get(clientIndex).auths
-        }
-        auths.removeAt(index % 1000)
+        val authAccess = model.asMap().get("authAccess") as AuthAccess
 
-        model.addAttribute("userList", userList)
-        model.addAttribute("userInfo", userInfo)
+        val auths = authAccess.auths
+        auths.removeAt(index)
+
         model.addAttribute("authAccess", authAccess)
+        model.addAttribute("auth", Auth())
+
+        return "corppass"
+    }
+
+    @PostMapping("/role", params=["removeThirdParty"])
+    fun removeThirdPartyRole(
+        model: Model,
+        @RequestParam(value="removeThirdParty") indexes: String,
+        @RequestParam requestParams: Map<String, String>
+    ): String {
+        val index = indexes.split(',')
+        populateModelState(model, requestParams)
+
+        val thirdPartyAuthAccess = model.asMap().get("thirdPartyAuthAccess") as ThirdPartyAuthAccess
+
+        val clientIndex = index.get(0).toInt()
+        val auths = thirdPartyAuthAccess.clients.get(clientIndex).auths
+        auths.removeAt(index.get(1).toInt())
+
         model.addAttribute("thirdPartyAuthAccess", thirdPartyAuthAccess)
         model.addAttribute("auth", Auth())
-        model.addAttribute("target", target)
 
         return "corppass"
     }
 
     @PostMapping("/userInfo", params=["select"])
-    fun removeRole(
+    fun selectUserInfo(
         model: Model,
         @RequestParam(value="select") index: Int,
-        @RequestParam(value="target") target: String,
-        @RequestParam(value="authAccessState") authAccessState: String,
-        @RequestParam(value="thirdPartyAuthAccessState") thirdPartyAuthAccessState: String,
-        @RequestParam(value="userListState") userListState: String
+        @RequestParam requestParams: Map<String, String>
     ): String {
-        val mapper = ObjectMapper()
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        val authAccess = mapper.readValue(authAccessState, AuthAccess::class.java)
-        val thirdPartyAuthAccess = mapper.readValue(thirdPartyAuthAccessState, ThirdPartyAuthAccess::class.java)
-        val userList = mapper.readValue(userListState, UserList::class.java)
+        populateModelState(model, requestParams)
 
+        val userList = model.asMap().get("userList") as UserList
         val userInfo = userList.userInfos.get(index)
 
-        model.addAttribute("userList", userList)
         model.addAttribute("userInfo", userInfo)
-        model.addAttribute("authAccess", authAccess)
-        model.addAttribute("thirdPartyAuthAccess", thirdPartyAuthAccess)
         model.addAttribute("auth", Auth())
-        model.addAttribute("target", target)
 
         return "corppass"
     }
@@ -206,7 +212,7 @@ class ProductionController {
             .path("/FIM/sps/CorpIDPFed/saml20/logininitial")
             .queryParam("RequestBinding", "HTTPArtifact")
             .queryParam("ResponseBinding", "HTTPArtifact")
-            .queryParam("PartnerId", ServiceProvider.Corppass.ENTITY_ID)
+            .queryParam("PartnerId", ServiceProvider.Corppass.entityId)
             .queryParam("Target", target ?: properties.corppass!!.homepageUrl)
             .queryParam("NameIdFormat", "Email")
             .queryParam("esrvcID", idp.serviceId)
@@ -216,9 +222,20 @@ class ProductionController {
     }
 
     @GetMapping("/cb")
-    fun callback(model: Model, @RequestParam(value="SAMLart") artifactId: String, @RequestParam(value="RelayState") relayState: String, request: HttpServletRequest): String {
+    fun callback(
+        model: Model,
+        @RequestParam(value="SAMLart") artifactId: String,
+        @RequestParam(value="RelayState") relayState: String,
+        request: HttpServletRequest
+    ): String {
         try {
-            val resolved = ArtifactResolver.resolveArtifact(artifactId, request, properties.corppass!!, ServiceProvider.Corppass, IdentityProvider.Corppass)
+            val resolved = ArtifactResolver.resolveArtifact(
+                artifactId,
+                request,
+                properties.corppass!!,
+                ServiceProvider.Corppass,
+                IdentityProvider.Corppass
+            )
             val user = DocumentBuilder.parse<User>(resolved.entries.single().value as String, "User")
 
             val token: String = jwt.buildCorppass(user.toMap())

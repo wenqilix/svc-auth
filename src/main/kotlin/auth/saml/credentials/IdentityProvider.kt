@@ -10,13 +10,15 @@ import org.opensaml.saml.saml2.metadata.impl.ArtifactResolutionServiceImpl
 import net.shibboleth.utilities.java.support.resolver.ResolverException
 import java.io.File
 import auth.saml.credentials.criterion.DefaultCriteriaSet
-import auth.saml.credentials.resolver.*
+import auth.saml.credentials.resolver.EntityIdResolver
+import auth.saml.credentials.resolver.EndpointResolver
+import auth.saml.credentials.resolver.CredentialResolver
 import auth.helper.Properties
 
 open class IdentityProviderMetaData(val path: String, val id: String) {
-    private val ENTITY_ID: String
-    val ARTIFACT_RESOLUTION_SERVICE: String
-    val SIGNING_CREDENTIAL: Credential
+    private val _entityId: String
+    val artifactResolutionService: String
+    val signingCredential: Credential
 
     init {
         try {
@@ -27,13 +29,14 @@ open class IdentityProviderMetaData(val path: String, val id: String) {
             idpMetadataResolver.setId(id)
             idpMetadataResolver.initialize()
 
-            ENTITY_ID = EntityIdResolver(idpMetadataResolver).resolveSingle()
+            _entityId = EntityIdResolver(idpMetadataResolver).resolveSingle()
 
-            val criteriaSet = DefaultCriteriaSet(ENTITY_ID).buildIdentityProviderCriteria()
-            ARTIFACT_RESOLUTION_SERVICE = EndpointResolver(idpMetadataResolver).resolveSingle<ArtifactResolutionServiceImpl>(criteriaSet)
+            val criteriaSet = DefaultCriteriaSet(_entityId).buildIdentityProviderCriteria()
+            artifactResolutionService =
+                EndpointResolver(idpMetadataResolver).resolveSingle<ArtifactResolutionServiceImpl>(criteriaSet)
 
             criteriaSet.add(EvaluableUsageCredentialCriterion(UsageType.SIGNING))
-            SIGNING_CREDENTIAL = CredentialResolver(idpMetadataResolver).resolveSingle(criteriaSet)
+            signingCredential = CredentialResolver(idpMetadataResolver).resolveSingle(criteriaSet)
         } catch (e: ResolverException) {
             throw RuntimeException("Something went wrong reading idp metadata", e)
         }

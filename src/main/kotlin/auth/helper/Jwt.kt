@@ -15,7 +15,7 @@ import java.nio.file.Paths
 @Service
 class Jwt {
     @Autowired
-    lateinit internal var properties: Properties
+    internal lateinit var properties: Properties
     internal val token by lazy {
         properties.token!!
     }

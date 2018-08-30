@@ -4,7 +4,14 @@ import org.joda.time.DateTime
 import auth.helper.Provider
 import org.slf4j.LoggerFactory
 import auth.saml.util.OpenSAMLUtils
-import org.opensaml.saml.saml2.core.*
+import org.opensaml.saml.saml2.core.Artifact
+import org.opensaml.saml.saml2.core.ArtifactResolve
+import org.opensaml.saml.saml2.core.ArtifactResponse
+import org.opensaml.saml.saml2.core.EncryptedAssertion
+import org.opensaml.saml.saml2.core.Issuer
+import org.opensaml.saml.saml2.core.Response
+import org.opensaml.saml.saml2.core.Assertion
+import org.opensaml.saml.saml2.core.Attribute
 import com.google.common.base.CaseFormat
 import org.opensaml.saml.common.SAMLObject
 import org.apache.xml.security.utils.Base64
@@ -53,11 +60,11 @@ class ArtifactResolver {
             try {
                 val artifact = buildArtifactFromRequest(artifactId)
 
-                val entityId = spMetadata.ENTITY_ID
-                val artifactResolutionService = idpMetadata.ARTIFACT_RESOLUTION_SERVICE
+                val entityId = spMetadata.entityId
+                val artifactResolutionService = idpMetadata.artifactResolutionService
                 val artifactResolve = buildArtifactResolve(artifact, entityId, artifactResolutionService)
 
-                signArtifactResolve(artifactResolve, spMetadata.CREDENTIAL)
+                signArtifactResolve(artifactResolve, spMetadata.credential)
 
                 logger.debug("Sending ArtifactResolve:")
                 OpenSAMLUtils.logSAMLObject(artifactResolve)
@@ -70,15 +77,15 @@ class ArtifactResolver {
                     artifactResponse,
                     request,
                     provider.identityProvider!!.artifactLifetimeClockSkew,
-                    spMetadata.ASSERTION_CONSUMER_SERVICE
+                    spMetadata.assertionConsumerService
                 )
 
                 val encryptedAssertion = getEncryptedAssertion(artifactResponse)
-                val assertion = decryptAssertion(encryptedAssertion, spMetadata.CREDENTIAL)
+                val assertion = decryptAssertion(encryptedAssertion, spMetadata.credential)
                 logger.debug("Assertion:")
                 OpenSAMLUtils.logSAMLObject(assertion)
 
-                ArtifactValidator.verifyAssertionSignature(assertion, idpMetadata.SIGNING_CREDENTIAL)
+                ArtifactValidator.verifyAssertionSignature(assertion, idpMetadata.signingCredential)
 
                 val attributes = assertion.attributeStatements[0].attributes
                 return convertAttributesToMap(attributes)
@@ -95,7 +102,11 @@ class ArtifactResolver {
             return artifactClass
         }
 
-        internal fun buildArtifactResolve(artifact: Artifact, entityId: String, artifactResolutionService: String): ArtifactResolve {
+        internal fun buildArtifactResolve(
+            artifact: Artifact,
+            entityId: String,
+            artifactResolutionService: String
+        ): ArtifactResolve {
             val artifactResolve = OpenSAMLUtils.buildSAMLObject(ArtifactResolve::class.java)
                     .orError("Error building SAML object for ArtifactResolve")
 
@@ -140,23 +151,22 @@ class ArtifactResolver {
 
                 val idp = provider.identityProvider!!
                 val clientBuilder = HttpClientBuilder()
-                if (idp.artifactServiceProxyHost != null) clientBuilder.connectionProxyHost = idp.artifactServiceProxyHost
-                if (idp.artifactServiceProxyPort != null) clientBuilder.connectionProxyPort = idp.artifactServiceProxyPort!!
-                if (idp.artifactServiceProxyUsername != null) clientBuilder.connectionProxyUsername = idp.artifactServiceProxyUsername
-                if (idp.artifactServiceProxyPassword != null) clientBuilder.connectionProxyPassword = idp.artifactServiceProxyPassword
-
+                if (idp.artifactServiceProxyHost != null) {
+                    clientBuilder.connectionProxyHost = idp.artifactServiceProxyHost
+                }
+                if (idp.artifactServiceProxyPort != null) {
+                    clientBuilder.connectionProxyPort = idp.artifactServiceProxyPort!!
+                }
+                if (idp.artifactServiceProxyUsername != null) {
+                    clientBuilder.connectionProxyUsername = idp.artifactServiceProxyUsername
+                }
+                if (idp.artifactServiceProxyPassword != null) {
+                    clientBuilder.connectionProxyPassword = idp.artifactServiceProxyPassword
+                }
 
                 soapClient.httpClient  = clientBuilder.buildClient()
-                soapClient.send(idpMetadata.ARTIFACT_RESOLUTION_SERVICE, context)
+                soapClient.send(idpMetadata.artifactResolutionService, context)
                 return context.inboundMessageContext.message
-            } catch (e: SecurityException) {
-                throw RuntimeException(e)
-            } catch (e: ComponentInitializationException) {
-                throw RuntimeException(e)
-            } catch (e: MessageEncodingException) {
-                throw RuntimeException(e)
-            } catch (e: IllegalAccessException) {
-                throw RuntimeException(e)
             } catch (e: Exception) {
                 throw RuntimeException(e)
             }
@@ -185,7 +195,10 @@ class ArtifactResolver {
             artifactResolve.signature = signature
 
             try {
-                XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(artifactResolve)?.marshall(artifactResolve)
+                XMLObjectProviderRegistrySupport
+                    .getMarshallerFactory()
+                    .getMarshaller(artifactResolve)
+                    ?.marshall(artifactResolve)
                 Signer.signObject(signature)
             } catch (e: MarshallingException) {
                 throw RuntimeException(e)
@@ -216,7 +229,9 @@ class ArtifactResolver {
         internal fun convertAttributesToMap(attributes: List<Attribute>): Map<String, Any> {
             val result = HashMap<String, Any>()
             for (attribute: Attribute in attributes) {
-                val attributeValues = attribute.attributeValues.map { attributeValue -> (attributeValue as XSString).value ?: "" }
+                val attributeValues = attribute.attributeValues.map {
+                    attributeValue -> (attributeValue as XSString).value ?: ""
+                }
                 result.put(
                         CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, attribute.name),
                         if (attributeValues.size > 1) attributeValues else attributeValues.get(0)

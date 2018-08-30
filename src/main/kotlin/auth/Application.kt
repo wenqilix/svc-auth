@@ -1,7 +1,5 @@
 package auth
 
-import java.io.*
-
 import brave.Tracing
 import brave.opentracing.BraveTracer
 import brave.sampler.Sampler
@@ -17,10 +15,10 @@ import zipkin.reporter.Encoding
 
 import auth.helper.Properties
 
-const val applicationName = "svc-auth"
-const val zipkinHostnamePropertiesPath = "app.instrumentation.zipkin"
-const val zipkinHostnamePropertiesKey = "url"
-const val zipkinTracingUrlPath = "/api/v1/spans"
+const val APPLICATION_NAME = "svc-auth"
+const val ZIPKIN_HOSTNAME_PROPERTIES_PATH = "app.instrumentation.zipkin"
+const val ZIPKIN_HOSTNAME_PROPERTIES_KEY = "url"
+const val ZIPKIN_TRACING_URL_PATH = "/api/v1/spans"
 
 @SpringBootApplication
 class Application {
@@ -30,7 +28,7 @@ class Application {
     private fun getZipkinApiEndpoint(): String {
         val zipkinServerUrl: String =
             (properties.instrumentation?.zipkin?.url).toString()
-        return "${zipkinServerUrl}${zipkinTracingUrlPath}"
+        return "${zipkinServerUrl}${ZIPKIN_TRACING_URL_PATH}"
     }
 
     private fun getZipkinApplicationName(applicationName: String): String {
@@ -42,8 +40,8 @@ class Application {
 
     @Bean
     @ConditionalOnProperty(
-        prefix=zipkinHostnamePropertiesPath,
-        value=[zipkinHostnamePropertiesKey],
+        prefix=ZIPKIN_HOSTNAME_PROPERTIES_PATH,
+        value=[ZIPKIN_HOSTNAME_PROPERTIES_KEY],
         matchIfMissing=false
     )
     fun zipkinTracer(): io.opentracing.Tracer {
@@ -58,7 +56,7 @@ class Application {
             Tracing
                 .newBuilder()
                 .localServiceName(
-                    getZipkinApplicationName(applicationName)
+                    getZipkinApplicationName(APPLICATION_NAME)
                 )
                 .reporter(reporter)
                 .build()

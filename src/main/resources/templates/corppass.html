@@ -167,7 +167,7 @@
                                 <td th:text="${auth.endDate}">
                                 </td>
                                 <td>
-                                <button type="submit" class="btn btn-secondary" name="remove" th:value="${clientStat.count*1000}+${authStat.index}">Remove</button>
+                                <button type="submit" class="btn btn-secondary" name="removeThirdParty" th:value="${clientStat.index}+','+${authStat.index}">Remove</button>
                                 </td>
                             </tr>
                         </th:block>

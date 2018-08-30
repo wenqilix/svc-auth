@@ -66,7 +66,7 @@ class ProductionController {
             .path("/FIM/sps/SingpassIDPFed/saml20/logininitial")
             .queryParam("RequestBinding", "HTTPArtifact")
             .queryParam("ResponseBinding", "HTTPArtifact")
-            .queryParam("PartnerId", ServiceProvider.Singpass.ENTITY_ID)
+            .queryParam("PartnerId", ServiceProvider.Singpass.entityId)
             .queryParam("Target", target ?: properties.singpass!!.homepageUrl)
             .queryParam("NameIdFormat", "Email")
             .queryParam("esrvcID", idp.serviceId)
@@ -76,9 +76,20 @@ class ProductionController {
     }
 
     @GetMapping("/cb")
-    fun callback(model: Model, @RequestParam(value="SAMLart") artifactId: String, @RequestParam(value="RelayState") relayState: String, request: HttpServletRequest): String {
+    fun callback(
+        model: Model,
+        @RequestParam(value="SAMLart") artifactId: String,
+        @RequestParam(value="RelayState") relayState: String,
+        request: HttpServletRequest
+    ): String {
         try {
-            val resolved = ArtifactResolver.resolveArtifact(artifactId, request, properties.singpass!!, ServiceProvider.Singpass, IdentityProvider.Singpass)
+            val resolved = ArtifactResolver.resolveArtifact(
+                artifactId,
+                request,
+                properties.singpass!!,
+                ServiceProvider.Singpass,
+                IdentityProvider.Singpass
+            )
             val user = User(resolved)
 
             val token: String = jwt.buildSingpass(user.toMap())

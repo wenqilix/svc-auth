@@ -11,14 +11,16 @@ import org.opensaml.saml.saml2.metadata.impl.AssertionConsumerServiceImpl
 import net.shibboleth.utilities.java.support.resolver.ResolverException
 import java.io.File
 import auth.saml.credentials.criterion.DefaultCriteriaSet
-import auth.saml.credentials.resolver.*
+import auth.saml.credentials.resolver.EntityIdResolver
+import auth.saml.credentials.resolver.EndpointResolver
+import auth.saml.credentials.resolver.CredentialResolver
 import auth.helper.Cryptography
 import auth.helper.Properties
 
 open class ServiceProviderMetaData(val path: String, val id: String) {
-    val ENTITY_ID: String
-    val ASSERTION_CONSUMER_SERVICE: String
-    val CREDENTIAL: Credential
+    val entityId: String
+    val assertionConsumerService: String
+    val credential: Credential
 
     init {
         try {
@@ -29,17 +31,18 @@ open class ServiceProviderMetaData(val path: String, val id: String) {
             spMetadataResolver.setId(id)
             spMetadataResolver.initialize()
 
-            ENTITY_ID = EntityIdResolver(spMetadataResolver).resolveSingle()
+            entityId = EntityIdResolver(spMetadataResolver).resolveSingle()
 
-            val criteriaSet = DefaultCriteriaSet(ENTITY_ID).buildServiceProviderCriteria()
-            ASSERTION_CONSUMER_SERVICE = EndpointResolver(spMetadataResolver).resolveSingle<AssertionConsumerServiceImpl>(criteriaSet)
+            val criteriaSet = DefaultCriteriaSet(entityId).buildServiceProviderCriteria()
+            assertionConsumerService =
+                EndpointResolver(spMetadataResolver).resolveSingle<AssertionConsumerServiceImpl>(criteriaSet)
 
             criteriaSet.add(EvaluableUsageCredentialCriterion(UsageType.ENCRYPTION))
-            CREDENTIAL = CredentialResolver(spMetadataResolver).resolveSingle(criteriaSet)
+            credential = CredentialResolver(spMetadataResolver).resolveSingle(criteriaSet)
 
             val properties = Properties.getPropertiesContext()
             val key = Cryptography.generatePrivate(properties.singpass!!.serviceProvider!!.privateKey)
-            (CREDENTIAL as BasicCredential).setPrivateKey(key)
+            (credential as BasicCredential).setPrivateKey(key)
         } catch (e: ResolverException) {
             throw RuntimeException("Something went wrong reading sp metadata/credential", e)
         }

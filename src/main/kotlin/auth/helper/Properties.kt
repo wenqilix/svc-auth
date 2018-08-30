@@ -14,7 +14,7 @@ class Properties: ApplicationContextAware {
     var instrumentation: Instrumentation? = null
     
     companion object {
-        lateinit private var applicationContext: ApplicationContext
+        private lateinit var applicationContext: ApplicationContext
 
         fun getPropertiesContext(): Properties {
             return applicationContext.getBeansOfType(Properties::class.java).values.iterator().next()
@@ -38,7 +38,7 @@ class ZipkinInstrumentation {
 class Token {
     lateinit var privateKey: String
     lateinit var signatureAlgorithm: String
-    var expirationTime: Long = 1_000
+    var expirationTime: Long = 0
 }
 
 class Provider {

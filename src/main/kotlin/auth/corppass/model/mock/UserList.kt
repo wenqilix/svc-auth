@@ -2,7 +2,7 @@ package auth.corppass.model.mock
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.web.client.RestTemplate
-import org.springframework.http.converter.*
+import org.springframework.http.converter.ByteArrayHttpMessageConverter
 import auth.corppass.model.UserInfo
 
 data class UserList (
