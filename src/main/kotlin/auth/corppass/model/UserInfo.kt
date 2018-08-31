@@ -12,7 +12,7 @@ import auth.helper.xml.EmptyStringXmlAdapter
 
 @XmlRootElement(name = "UserInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-data class UserInfo (
+data class UserInfo(
     @field:XmlElement(name = "CPAccType") var accountType: String = "User",
     @field:XmlElement(name = "CPUID") var userId: String = "",
     @field:XmlElement(name = "CPUID_Country") var userCountry: String = "SG",
@@ -20,27 +20,27 @@ data class UserInfo (
     @field:XmlElement(name = "CPSystemUID") var userName: String = "",
 
     @field:XmlElement(name = "ISSPHOLDER")
-    @field:XmlJavaTypeAdapter(type=Boolean::class, value=BooleanStringXmlAdapter::class)
+    @field:XmlJavaTypeAdapter(type = Boolean::class, value = BooleanStringXmlAdapter::class)
     var singpassHolder: Boolean = false,
 
     @field:XmlElement(name = "CPEntID") var entityId: String = "",
 
     @field:XmlElement(name = "CPEnt_Status")
-    @field:XmlJavaTypeAdapter(value=EmptyStringXmlAdapter::class)
+    @field:XmlJavaTypeAdapter(value = EmptyStringXmlAdapter::class)
     var entityStatus: String? = null,
 
     @field:XmlElement(name = "CPEnt_TYPE") var entityType: String = "UEN",
 
     @field:XmlElement(name = "CPNonUEN_RegNo")
-    @field:XmlJavaTypeAdapter(value=EmptyStringXmlAdapter::class)
+    @field:XmlJavaTypeAdapter(value = EmptyStringXmlAdapter::class)
     var entityRegNo: String? = null,
 
     @field:XmlElement(name = "CPNonUEN_Country")
-    @field:XmlJavaTypeAdapter(value=EmptyStringXmlAdapter::class)
+    @field:XmlJavaTypeAdapter(value = EmptyStringXmlAdapter::class)
     var entityCountry: String? = null,
 
     @field:XmlElement(name = "CPNonUEN_Name")
-    @field:XmlJavaTypeAdapter(value=EmptyStringXmlAdapter::class)
+    @field:XmlJavaTypeAdapter(value = EmptyStringXmlAdapter::class)
     var entityName: String? = null
 ) {
     constructor(mapData: Map<String, Any>): this(
@@ -60,11 +60,11 @@ data class UserInfo (
 
     fun toMap(): Map<String, Any?> {
         val mapper = ObjectMapper()
-        return mapper.convertValue(this, object: TypeReference<Map<String, Any?>>() {})
+        return mapper.convertValue(this, object : TypeReference<Map<String, Any?>>() {})
     }
 
     fun toUrlParams(): String {
-        val paramList: List<String> = this.toMap().map {ele -> "${ele.key}=${ele.value ?: ""}"}
+        val paramList: List<String> = this.toMap().map { ele -> "${ele.key}=${ele.value ?: ""}" }
         return paramList.joinToString("&")
     }
 

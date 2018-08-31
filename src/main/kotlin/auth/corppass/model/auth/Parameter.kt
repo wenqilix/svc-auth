@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.core.type.TypeReference
 
 @XmlAccessorType(XmlAccessType.FIELD)
-data class Parameter (
+data class Parameter(
     @field:XmlValue var value: String = "",
     @field:XmlAttribute(name = "name") var name: String = ""
 ) {
@@ -19,6 +19,6 @@ data class Parameter (
 
     fun toMap(): Map<String, String> {
         val mapper = ObjectMapper()
-        return mapper.convertValue(this, object: TypeReference<Map<String, String>>() {})
+        return mapper.convertValue(this, object : TypeReference<Map<String, String>>() {})
     }
 }

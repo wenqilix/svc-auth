@@ -1,7 +1,7 @@
 package auth.corppass.model
 
 import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import auth.helper.xml.DocumentBuilder
 import java.io.ByteArrayInputStream
 

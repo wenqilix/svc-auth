@@ -12,15 +12,15 @@ import auth.corppass.model.auth.ThirdPartyClient
 
 @XmlRootElement(name = "TPAuthAccess")
 @XmlAccessorType(XmlAccessType.FIELD)
-data class ThirdPartyAuthAccess (
+data class ThirdPartyAuthAccess(
     @field:XmlElement(name = "CP_TPEntID") var entityId: String = "",
 
-    @field:XmlJavaTypeAdapter(value=EmptyStringXmlAdapter::class)
+    @field:XmlJavaTypeAdapter(value = EmptyStringXmlAdapter::class)
     @field:XmlElement(name = "CP_TPEnt_Status") var entityStatus: String? = null,
 
     @field:XmlElement(name = "CP_TPEnt_TYPE") var entityType: String = "",
 
-    @field:XmlJavaTypeAdapter(value=FlatMapXmlAdapter::class)
+    @field:XmlJavaTypeAdapter(value = FlatMapXmlAdapter::class)
     @field:XmlElement(name = "Result_Set")
     var clients: MutableList<ThirdPartyClient> = mutableListOf<ThirdPartyClient>()
 ) {

@@ -5,7 +5,7 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.http.converter.ByteArrayHttpMessageConverter
 import auth.corppass.model.UserInfo
 
-data class UserList (
+data class UserList(
     var userInfos: List<UserInfo> = emptyList()
 ) {
     fun populateFrom(url: String) {

@@ -1,11 +1,10 @@
 package auth.corppass.model
 
 import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import java.io.ByteArrayInputStream
-import java.util.Arrays
 import auth.helper.xml.DocumentBuilder
-import auth.corppass.model.auth.*
+import auth.corppass.model.auth.Parameter
 
 class ThirdPartyAuthAccessTests {
     @Test
@@ -79,7 +78,7 @@ class ThirdPartyAuthAccessTests {
         assertEquals("2011-01-15", firstClientFirstAuth.startDate)
         assertEquals("2011-01-15", firstClientFirstAuth.endDate)
         assertEquals(mutableListOf(
-            Parameter(name="Year of assessment", value="2015")
+            Parameter(name = "Year of assessment", value = "2015")
         ), firstClientFirstAuth.parameters)
 
         val firstClientSecondAuth = firstClient.auths.get(1)
@@ -88,7 +87,7 @@ class ThirdPartyAuthAccessTests {
         assertEquals("2011-01-15", firstClientSecondAuth.startDate)
         assertEquals("2011-01-15", firstClientSecondAuth.endDate)
         assertEquals(mutableListOf(
-            Parameter(name="Year of assessment", value="2014")
+            Parameter(name = "Year of assessment", value = "2014")
         ), firstClientSecondAuth.parameters)
 
         val secondClient = thirdPartyAuthAccess.clients.get(1)
@@ -102,8 +101,7 @@ class ThirdPartyAuthAccessTests {
         assertEquals("2011-01-15", secondClientSecondAuth.startDate)
         assertEquals("2011-01-15", secondClientSecondAuth.endDate)
         assertEquals(mutableListOf(
-            Parameter(name="Year of assessment", value="2014")
+            Parameter(name = "Year of assessment", value = "2014")
         ), secondClientSecondAuth.parameters)
-
     }
 }

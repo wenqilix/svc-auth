@@ -1,12 +1,10 @@
 package auth.helper
 
 import org.springframework.stereotype.Service
-import org.springframework.context.annotation.Profile
 import org.springframework.beans.factory.annotation.Autowired
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.SignatureException
-import javax.crypto.spec.SecretKeySpec
 import java.util.Date
 import java.security.Key
 import java.nio.file.Files

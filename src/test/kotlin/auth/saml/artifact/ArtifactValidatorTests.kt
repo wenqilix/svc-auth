@@ -1,13 +1,14 @@
 package auth.saml.artifact
 
 import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.joda.time.DateTime
-import org.junit.runner.RunWith
-import org.opensaml.saml.saml2.core.*
+import org.opensaml.saml.saml2.core.ArtifactResponse
+import org.opensaml.saml.saml2.core.Response
 import org.springframework.mock.web.MockHttpServletRequest
 
-class ArtifactValidatorUnitTests: ArtifactUnitTestBase() {
+class ArtifactValidatorTests : ArtifactUnitTestBase() {
     @Test
     fun validateDestinationAndLifetime() {
 
@@ -50,40 +51,40 @@ class ArtifactValidatorUnitTests: ArtifactUnitTestBase() {
             assertTrue(e is RuntimeException)
         }
 
-       try {
-           // Negative test
-           // Incorrect destination
-           response.issueInstant = DateTime.now()
-           response.destination = "http://destination"
-           request.serverName = "wrong_destination"
-           ArtifactValidator.validateDestinationAndLifetime(artifactResponse, request)
-           fail("Validation failed. Should be throwing error")
-       } catch (e: Exception) {
-           assertTrue(e is RuntimeException)
-       }
-
-       try {
-           // Positive test
-           // When service provider callback url is provided, it should compare against it
+        try {
+            // Negative test
+            // Incorrect destination
             response.issueInstant = DateTime.now()
-            response.destination = "https://destination"
-            request.serverName = "whatever_destination"
-            ArtifactValidator.validateDestinationAndLifetime(artifactResponse, request, 0, "https://destination")
-       } catch (e: Exception) {
-            fail("Validation failed. Should not be throwing error")
-       }
-
-       try {
-           // Negative test
-           // When service provider callback url is provided, it should compare against it
-            response.issueInstant = DateTime.now()
-            response.destination = "http://wrong_destination"
-            request.serverName = "whatever_destination"
-            ArtifactValidator.validateDestinationAndLifetime(artifactResponse, request, 0, "https://destination")
+            response.destination = "http://destination"
+            request.serverName = "wrong_destination"
+            ArtifactValidator.validateDestinationAndLifetime(artifactResponse, request)
             fail("Validation failed. Should be throwing error")
-       } catch (e: Exception) {
+        } catch (e: Exception) {
             assertTrue(e is RuntimeException)
-       }
+        }
+
+        try {
+            // Positive test
+            // When service provider callback url is provided, it should compare against it
+                response.issueInstant = DateTime.now()
+                response.destination = "https://destination"
+                request.serverName = "whatever_destination"
+                ArtifactValidator.validateDestinationAndLifetime(artifactResponse, request, 0, "https://destination")
+        } catch (e: Exception) {
+                fail("Validation failed. Should not be throwing error")
+        }
+
+        try {
+            // Negative test
+            // When service provider callback url is provided, it should compare against it
+                response.issueInstant = DateTime.now()
+                response.destination = "http://wrong_destination"
+                request.serverName = "whatever_destination"
+                ArtifactValidator.validateDestinationAndLifetime(artifactResponse, request, 0, "https://destination")
+                fail("Validation failed. Should be throwing error")
+        } catch (e: Exception) {
+                assertTrue(e is RuntimeException)
+        }
     }
 
 //    @Test

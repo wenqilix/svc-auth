@@ -3,14 +3,19 @@ package auth.singpass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Before
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.*
+import org.springframework.http.HttpStatus
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.InjectMocks
+import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.*
 import io.jsonwebtoken.JwtException
 import auth.helper.Jwt
 
@@ -48,7 +53,7 @@ class ApiControllerUnitTests {
         val validToken = "valid.token.value"
         Mockito.`when`(mockJwt.parseSingpass(validToken)).thenReturn(mapOf("userName" to "foo", "mobile" to "bar"))
 
-        val result = apiController.refresh("Bearer ${validToken}")
+        val result = apiController.refresh("Bearer $validToken")
         assertNotNull(result)
         assertEquals(HttpStatus.OK, result.statusCode)
         assertTrue(result.body["success"] as Boolean)

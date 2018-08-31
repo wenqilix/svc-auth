@@ -1,12 +1,12 @@
 package auth.corppass.model
 
 import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import java.util.Base64
-import javax.xml.bind.JAXBContext
-import java.io.ByteArrayInputStream
 import auth.helper.xml.DocumentBuilder
-import auth.corppass.model.auth.*
+import auth.corppass.model.auth.Auth
+import auth.corppass.model.auth.ThirdPartyClient
+import auth.corppass.model.auth.Parameter
 
 class UserTests {
     @Test
@@ -101,11 +101,11 @@ class UserTests {
         assertEquals(null, user.userInfo.entityName)
 
         val parameters = mutableListOf(
-            Parameter(name="Year of assessment", value="2014")
+            Parameter(name = "Year of assessment", value = "2014")
         )
         val auths = mutableListOf<Auth>(
-            Auth(startDate="2016-01-15", endDate="2016-02-15"),
-            Auth(startDate="2016-03-15", endDate="2017-04-15", parameters=parameters)
+            Auth(startDate = "2016-01-15", endDate = "2016-02-15"),
+            Auth(startDate = "2016-03-15", endDate = "2017-04-15", parameters = parameters)
         )
         val authAccess = AuthAccess(auths)
         assertEquals(authAccess.toMap(), user.authAccess.toMap())

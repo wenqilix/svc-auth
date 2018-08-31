@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlElementWrapper
 import javax.xml.bind.annotation.XmlElement
 
 @XmlAccessorType(XmlAccessType.FIELD)
-data class ThirdPartyClient (
+data class ThirdPartyClient(
     @field:XmlElement(name = "CP_Clnt_ID") var entityId: String = "",
     @field:XmlElement(name = "CP_ClntEnt_TYPE") var entityType: String = "",
 

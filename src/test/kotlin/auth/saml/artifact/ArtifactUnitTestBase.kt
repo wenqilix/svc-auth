@@ -52,12 +52,11 @@ open class ArtifactUnitTestBase {
             val doc = parser.parse(ArtifactUnitTestBase::class.java.getResourceAsStream(elementFile))
             val samlElement = doc.documentElement
             return XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(samlElement)?.unmarshall(samlElement)
-        } catch ( e: XMLParserException) {
+        } catch (e: XMLParserException) {
             Assert.fail("Unable to parse element file " + elementFile)
         } catch (e: UnmarshallingException) {
             Assert.fail("Unmarshalling failed when parsing element file " + elementFile + ": " + e)
         }
         return null
     }
-
 }

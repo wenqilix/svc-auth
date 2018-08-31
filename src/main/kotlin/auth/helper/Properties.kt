@@ -7,12 +7,12 @@ import org.springframework.context.ApplicationContext
 
 @Configuration
 @ConfigurationProperties(prefix = "app")
-class Properties: ApplicationContextAware {
+class Properties : ApplicationContextAware {
     var token: Token? = null
     var singpass: Provider? = null
     var corppass: Provider? = null
     var instrumentation: Instrumentation? = null
-    
+
     companion object {
         private lateinit var applicationContext: ApplicationContext
 
@@ -21,7 +21,7 @@ class Properties: ApplicationContextAware {
         }
     }
 
-    override fun setApplicationContext(context: ApplicationContext ) {
+    override fun setApplicationContext(context: ApplicationContext) {
         applicationContext = context
     }
 }

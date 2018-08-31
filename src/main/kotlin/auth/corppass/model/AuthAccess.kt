@@ -11,8 +11,8 @@ import auth.corppass.model.auth.Auth
 
 @XmlRootElement(name = "AuthAccess")
 @XmlAccessorType(XmlAccessType.FIELD)
-data class AuthAccess (
-    @field:XmlJavaTypeAdapter(value=FlatMapXmlAdapter::class)
+data class AuthAccess(
+    @field:XmlJavaTypeAdapter(value = FlatMapXmlAdapter::class)
     @field:XmlElement(name = "Result_Set")
     var auths: MutableList<Auth> = mutableListOf<Auth>()
 ) {

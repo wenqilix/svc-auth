@@ -3,7 +3,7 @@ package auth.singpass.model
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.core.type.TypeReference
 
-data class User (
+data class User(
     var userName: String = "",
     var mobile: String = ""
 ) {
@@ -14,6 +14,6 @@ data class User (
 
     fun toMap(): Map<String, Any> {
         val mapper = ObjectMapper()
-        return mapper.convertValue(this, object: TypeReference<Map<String, Any>>() {})
+        return mapper.convertValue(this, object : TypeReference<Map<String, Any>>() {})
     }
 }

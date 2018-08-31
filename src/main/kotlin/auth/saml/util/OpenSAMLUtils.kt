@@ -77,6 +77,5 @@ object OpenSAMLUtils {
         } catch (e: TransformerException) {
             e.printStackTrace()
         }
-
     }
 }

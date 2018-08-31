@@ -4,6 +4,9 @@ spring:
     output:
         ansi:
             enabled: ALWAYS
+    mvc:
+        favicon:
+            enabled: false
 server:
     port: 8000
 app:

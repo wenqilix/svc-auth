@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlElement
 
 @XmlRootElement(name = "User")
 @XmlAccessorType(XmlAccessType.FIELD)
-data class User (
+data class User(
     @field:XmlElement(name = "UserInfo") val userInfo: UserInfo = UserInfo(),
     @field:XmlElement(name = "AuthAccess") val authAccess: AuthAccess = AuthAccess(),
     @field:XmlElement(name = "TPAuthAccess") val thirdPartyAuthAccess: ThirdPartyAuthAccess = ThirdPartyAuthAccess()

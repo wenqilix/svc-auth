@@ -2,7 +2,6 @@ package auth
 
 import brave.Tracing
 import brave.opentracing.BraveTracer
-import brave.sampler.Sampler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.Bean
 import zipkin.Span
 import zipkin.reporter.okhttp3.OkHttpSender
 import zipkin.reporter.AsyncReporter
-import zipkin.reporter.Encoding
 
 import auth.helper.Properties
 
@@ -28,21 +26,21 @@ class Application {
     private fun getZipkinApiEndpoint(): String {
         val zipkinServerUrl: String =
             (properties.instrumentation?.zipkin?.url).toString()
-        return "${zipkinServerUrl}${ZIPKIN_TRACING_URL_PATH}"
+        return "${zipkinServerUrl}$ZIPKIN_TRACING_URL_PATH"
     }
 
     private fun getZipkinApplicationName(applicationName: String): String {
         val zipkinEnvironment: String =
             (properties.instrumentation?.zipkin?.env).toString()
         return if (zipkinEnvironment == "null") applicationName
-            else "${applicationName}-${zipkinEnvironment}"
+            else "$applicationName-$zipkinEnvironment"
     }
 
     @Bean
     @ConditionalOnProperty(
-        prefix=ZIPKIN_HOSTNAME_PROPERTIES_PATH,
-        value=[ZIPKIN_HOSTNAME_PROPERTIES_KEY],
-        matchIfMissing=false
+        prefix = ZIPKIN_HOSTNAME_PROPERTIES_PATH,
+        value = [ZIPKIN_HOSTNAME_PROPERTIES_KEY],
+        matchIfMissing = false
     )
     fun zipkinTracer(): io.opentracing.Tracer {
         val okHttpSender: OkHttpSender =

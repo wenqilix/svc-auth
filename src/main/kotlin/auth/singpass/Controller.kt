@@ -27,15 +27,15 @@ class DevelopmentController {
     lateinit var jwt: Jwt
 
     @GetMapping("/login")
-    fun login(model: Model, @RequestParam(value="target", required=false) target: String?): String {
+    fun login(model: Model, @RequestParam(value = "target", required = false) target: String?): String {
         model.addAttribute("user", User())
         model.addAttribute("target", target ?: properties.singpass!!.homepageUrl)
 
         return "singpass"
     }
- 
+
     @GetMapping("/cb")
-    fun callback(user: User, model: Model, @RequestParam(value="RelayState") relayState: String): String {
+    fun callback(user: User, model: Model, @RequestParam(value = "RelayState") relayState: String): String {
         val token: String = jwt.buildSingpass(user.toMap())
 
         model.addAttribute("model", object {
@@ -58,7 +58,7 @@ class ProductionController {
     lateinit var jwt: Jwt
 
     @GetMapping("/login")
-    fun login(@RequestParam(value="target", required=false) target: String?): String {
+    fun login(@RequestParam(value = "target", required = false) target: String?): String {
         val idp = properties.singpass!!.identityProvider!!
         val uriComponents: UriComponents = UriComponentsBuilder.newInstance()
             .scheme("https")
@@ -78,8 +78,8 @@ class ProductionController {
     @GetMapping("/cb")
     fun callback(
         model: Model,
-        @RequestParam(value="SAMLart") artifactId: String,
-        @RequestParam(value="RelayState") relayState: String,
+        @RequestParam(value = "SAMLart") artifactId: String,
+        @RequestParam(value = "RelayState") relayState: String,
         request: HttpServletRequest
     ): String {
         try {

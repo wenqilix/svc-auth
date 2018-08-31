@@ -21,6 +21,6 @@ class Cryptography {
             val spec = PKCS8EncodedKeySpec(decodedKey)
             val fact = KeyFactory.getInstance("RSA")
             return fact.generatePrivate(spec)
-        } 
+        }
     }
 }

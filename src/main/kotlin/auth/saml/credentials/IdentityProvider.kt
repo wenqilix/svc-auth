@@ -44,11 +44,11 @@ open class IdentityProviderMetaData(val path: String, val id: String) {
 }
 
 class IdentityProvider {
-    object Singpass: IdentityProviderMetaData(
+    object Singpass : IdentityProviderMetaData(
         Properties.getPropertiesContext().singpass!!.identityProvider!!.metadataPath,
         Properties.getPropertiesContext().singpass!!.identityProvider!!.metadataId
     )
-    object Corppass: IdentityProviderMetaData(
+    object Corppass : IdentityProviderMetaData(
         Properties.getPropertiesContext().corppass!!.identityProvider!!.metadataPath,
         Properties.getPropertiesContext().corppass!!.identityProvider!!.metadataId
     )

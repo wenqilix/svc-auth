@@ -42,14 +42,14 @@ class ArtifactValidator {
             receivedEndpointSecurityHandler.httpServletRequest = request
             receivedEndpointSecurityHandler.uriComparator = BasicDestinationURLComparator(callbackUrl)
 
-            val handlers : List<MessageHandler<Any>> = listOf(lifetimeSecurityHandler, receivedEndpointSecurityHandler)
+            val handlers: List<MessageHandler<Any>> = listOf(lifetimeSecurityHandler, receivedEndpointSecurityHandler)
             val handlerChain = BasicMessageHandlerChain<Any>()
             handlerChain.handlers = handlers
 
             try {
                 handlerChain.initialize()
                 handlerChain.doInvoke(context)
-            } catch (e: ComponentInitializationException ) {
+            } catch (e: ComponentInitializationException) {
                 throw RuntimeException(e)
             } catch (e: MessageHandlerException) {
                 throw RuntimeException(e)

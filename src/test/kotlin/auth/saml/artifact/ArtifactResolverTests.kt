@@ -1,25 +1,32 @@
 package auth.saml.artifact
 
 import org.junit.Test
-import org.junit.Assert.*
-import org.hamcrest.Matchers.*
-import org.junit.runner.RunWith
-import org.opensaml.saml.saml2.core.*
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertEquals
+import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.`is` as Is
+import org.opensaml.saml.saml2.core.Artifact
+import org.opensaml.saml.saml2.core.ArtifactResolve
+import org.opensaml.saml.saml2.core.EncryptedAssertion
+import org.opensaml.saml.saml2.core.Attribute
+import org.opensaml.saml.saml2.core.AttributeValue
 import org.apache.xml.security.utils.Base64
 import org.opensaml.core.xml.schema.XSString
 import org.opensaml.saml.saml2.core.impl.AttributeBuilder
 import org.opensaml.core.xml.schema.impl.XSStringBuilder
 
-class ArtifactResolverUnitTests: ArtifactUnitTestBase() {
+class ArtifactResolverTests : ArtifactUnitTestBase() {
     private val artifactId = "artifactId"
     private val entityId = "entityId"
     private val artifactResolutionService = "artifactResolutionService"
 
-    private fun createArtifact() : Artifact {
+    private fun createArtifact(): Artifact {
         return ArtifactResolver.buildArtifactFromRequest(artifactId)
     }
 
-    private fun createArtifactResolve(artifact: Artifact) : ArtifactResolve {
+    private fun createArtifactResolve(artifact: Artifact): ArtifactResolve {
         return ArtifactResolver.buildArtifactResolve(artifact, entityId, artifactResolutionService)
     }
 
@@ -27,7 +34,7 @@ class ArtifactResolverUnitTests: ArtifactUnitTestBase() {
     fun buildArtifactFromRequest() {
         val artifact = createArtifact()
         assertNotNull(artifact)
-        assertThat(artifact, hasProperty("artifact", `is`(artifactId)))
+        assertThat(artifact, hasProperty("artifact", Is(artifactId)))
     }
 
     @Test
@@ -37,11 +44,11 @@ class ArtifactResolverUnitTests: ArtifactUnitTestBase() {
         val issuer = artifactResolve.issuer
 
         assertNotNull(artifactResolve)
-        assertThat(issuer, hasProperty("value", `is`(entityId)))
-        assertThat(artifactResolve, hasProperty("destination", `is`(artifactResolutionService)))
+        assertThat(issuer, hasProperty("value", Is(entityId)))
+        assertThat(artifactResolve, hasProperty("destination", Is(artifactResolutionService)))
         assertThat(artifactResolve, hasProperty("issueInstant"))
         assertThat(artifactResolve, hasProperty("issuer"))
-        assertThat(artifactResolve, hasProperty("artifact", `is`(artifact)))
+        assertThat(artifactResolve, hasProperty("artifact", Is(artifact)))
     }
 
     @Test
@@ -51,11 +58,11 @@ class ArtifactResolverUnitTests: ArtifactUnitTestBase() {
         ArtifactResolver.signArtifactResolve(artifactResolve, credential)
 
         val signature = artifactResolve.signature
-        val x509Data= signature?.keyInfo?.x509Datas?.get(0)
+        val x509Data = signature?.keyInfo?.x509Datas?.get(0)
         val x509Cert = x509Data?.x509Certificates?.get(0)
 
-        assertThat(signature, hasProperty("signingCredential", `is`(credential)))
-        assertThat(x509Cert, hasProperty("value", `is`(Base64.encode(publicKey.encoded))))
+        assertThat(signature, hasProperty("signingCredential", Is(credential)))
+        assertThat(x509Cert, hasProperty("value", Is(Base64.encode(publicKey.encoded))))
     }
 
     @Test
@@ -65,7 +72,7 @@ class ArtifactResolverUnitTests: ArtifactUnitTestBase() {
         val filename = "/ArtifactResolverTest/encryptedResponse.xml"
         val encryptedAssertion = unMarshallElement(filename) as EncryptedAssertion
 
-        val assertion = ArtifactResolver.decryptAssertion(encryptedAssertion,  credential)
+        val assertion = ArtifactResolver.decryptAssertion(encryptedAssertion, credential)
         val attributes = assertion.attributeStatements[0].attributes
 
         val attributesMap = ArtifactResolver.convertAttributesToMap(attributes)
@@ -100,7 +107,7 @@ class ArtifactResolverUnitTests: ArtifactUnitTestBase() {
         bar.value = "bar"
         arrayAttribute.attributeValues.add(foo)
         arrayAttribute.attributeValues.add(bar)
-				
+
         val attributes = listOf(userName, mobile, arrayAttribute)
         val result = ArtifactResolver.convertAttributesToMap(attributes)
 

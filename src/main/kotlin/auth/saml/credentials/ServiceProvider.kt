@@ -50,11 +50,11 @@ open class ServiceProviderMetaData(val path: String, val id: String) {
 }
 
 class ServiceProvider {
-    object Singpass: ServiceProviderMetaData(
+    object Singpass : ServiceProviderMetaData(
         Properties.getPropertiesContext().singpass!!.serviceProvider!!.metadataPath,
         Properties.getPropertiesContext().singpass!!.serviceProvider!!.metadataId
     )
-    object Corppass: ServiceProviderMetaData(
+    object Corppass : ServiceProviderMetaData(
         Properties.getPropertiesContext().corppass!!.serviceProvider!!.metadataPath,
         Properties.getPropertiesContext().corppass!!.serviceProvider!!.metadataId
     )

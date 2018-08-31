@@ -37,7 +37,7 @@ class DevelopmentController {
     lateinit var jwt: Jwt
 
     @GetMapping("/login")
-    fun login(model: Model, @RequestParam(value="target", required=false) target: String?): String {
+    fun login(model: Model, @RequestParam(value = "target", required = false) target: String?): String {
         val mockUserList = UserList()
         if (properties.corppass!!.mockUserListUrl != null) {
             mockUserList.populateFrom(properties.corppass!!.mockUserListUrl!!)
@@ -54,10 +54,11 @@ class DevelopmentController {
 
     @PostMapping("/cb")
     fun callback(
-        userInfo: UserInfo, model: Model,
-        @RequestParam(value="RelayState") relayState: String,
-        @RequestParam(value="authAccessState") authAccessState: String,
-        @RequestParam(value="thirdPartyAuthAccessState") thirdPartyAuthAccessState: String
+        userInfo: UserInfo,
+        model: Model,
+        @RequestParam(value = "RelayState") relayState: String,
+        @RequestParam(value = "authAccessState") authAccessState: String,
+        @RequestParam(value = "thirdPartyAuthAccessState") thirdPartyAuthAccessState: String
     ): String {
         val mapper = ObjectMapper()
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -101,10 +102,11 @@ class DevelopmentController {
         model.addAttribute("target", params.get("target"))
     }
 
-    @PostMapping("/role", params=["add"])
+    @PostMapping("/role", params = ["add"])
     fun addRole(
-        auth: Auth, model: Model,
-        @RequestParam(value="thirdParty", required=false) thirdParty: Boolean?,
+        auth: Auth,
+        model: Model,
+        @RequestParam(value = "thirdParty", required = false) thirdParty: Boolean?,
         @RequestParam requestParams: Map<String, String>
     ): String {
         populateModelState(model, requestParams)
@@ -136,10 +138,10 @@ class DevelopmentController {
         return "corppass"
     }
 
-    @PostMapping("/role", params=["remove"])
+    @PostMapping("/role", params = ["remove"])
     fun removeRole(
         model: Model,
-        @RequestParam(value="remove") index: Int,
+        @RequestParam(value = "remove") index: Int,
         @RequestParam requestParams: Map<String, String>
     ): String {
         populateModelState(model, requestParams)
@@ -155,10 +157,10 @@ class DevelopmentController {
         return "corppass"
     }
 
-    @PostMapping("/role", params=["removeThirdParty"])
+    @PostMapping("/role", params = ["removeThirdParty"])
     fun removeThirdPartyRole(
         model: Model,
-        @RequestParam(value="removeThirdParty") indexes: String,
+        @RequestParam(value = "removeThirdParty") indexes: String,
         @RequestParam requestParams: Map<String, String>
     ): String {
         val index = indexes.split(',')
@@ -176,10 +178,10 @@ class DevelopmentController {
         return "corppass"
     }
 
-    @PostMapping("/userInfo", params=["select"])
+    @PostMapping("/userInfo", params = ["select"])
     fun selectUserInfo(
         model: Model,
-        @RequestParam(value="select") index: Int,
+        @RequestParam(value = "select") index: Int,
         @RequestParam requestParams: Map<String, String>
     ): String {
         populateModelState(model, requestParams)
@@ -204,7 +206,7 @@ class ProductionController {
     lateinit var jwt: Jwt
 
     @GetMapping("/login")
-    fun login(@RequestParam(value="target", required=false) target: String?): String {
+    fun login(@RequestParam(value = "target", required = false) target: String?): String {
         val idp = properties.corppass!!.identityProvider!!
         val uriComponents: UriComponents = UriComponentsBuilder.newInstance()
             .scheme("https")
@@ -224,8 +226,8 @@ class ProductionController {
     @GetMapping("/cb")
     fun callback(
         model: Model,
-        @RequestParam(value="SAMLart") artifactId: String,
-        @RequestParam(value="RelayState") relayState: String,
+        @RequestParam(value = "SAMLart") artifactId: String,
+        @RequestParam(value = "RelayState") relayState: String,
         request: HttpServletRequest
     ): String {
         try {

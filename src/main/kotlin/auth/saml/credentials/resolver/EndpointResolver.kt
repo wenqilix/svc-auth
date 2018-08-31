@@ -9,7 +9,7 @@ import net.shibboleth.utilities.java.support.resolver.CriteriaSet
  * Resolve all ArtifactResolutionService binding location in Metadata from a given criteria set
  */
 class EndpointResolver(val metadataResolver: AbstractReloadingMetadataResolver) {
-    inline fun <reified T: IndexedEndpointImpl> resolve(criteria: CriteriaSet): Iterable<String> {
+    inline fun <reified T : IndexedEndpointImpl> resolve(criteria: CriteriaSet): Iterable<String> {
         val roleResolver = BasicRoleDescriptorResolver(metadataResolver)
         roleResolver.initialize()
 
@@ -18,7 +18,7 @@ class EndpointResolver(val metadataResolver: AbstractReloadingMetadataResolver) 
             .map { endpoint -> endpoint.location }
     }
 
-    inline fun <reified T: IndexedEndpointImpl> resolveSingle(criteria: CriteriaSet): String {
+    inline fun <reified T : IndexedEndpointImpl> resolveSingle(criteria: CriteriaSet): String {
         return resolve<T>(criteria).filterNotNull().first()
     }
 }

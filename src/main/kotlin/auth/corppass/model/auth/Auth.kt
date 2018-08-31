@@ -9,16 +9,16 @@ import java.time.LocalDate
 import auth.helper.xml.EmptyStringXmlAdapter
 
 @XmlAccessorType(XmlAccessType.FIELD)
-data class Auth (
+data class Auth(
     @field:XmlElements(
         XmlElement(name = "CPEntID_SUB"),
         XmlElement(name = "CP_ClntEnt_SUB")
     )
-    @field:XmlJavaTypeAdapter(value=EmptyStringXmlAdapter::class)
+    @field:XmlJavaTypeAdapter(value = EmptyStringXmlAdapter::class)
     var subEntityId: String? = null,
 
     @field:XmlElement(name = "CPRole")
-    @field:XmlJavaTypeAdapter(value=EmptyStringXmlAdapter::class)
+    @field:XmlJavaTypeAdapter(value = EmptyStringXmlAdapter::class)
     var role: String? = null,
 
     @field:XmlElement(name = "StartDate")

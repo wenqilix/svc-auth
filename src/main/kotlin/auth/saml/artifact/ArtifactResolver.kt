@@ -30,8 +30,6 @@ import org.opensaml.xmlsec.signature.X509Certificate
 import org.opensaml.core.xml.io.MarshallingException
 import org.opensaml.messaging.context.MessageContext
 import org.opensaml.profile.context.ProfileRequestContext
-import org.springframework.beans.factory.annotation.Autowired
-import org.opensaml.messaging.encoder.MessageEncodingException
 import org.opensaml.xmlsec.signature.support.SignatureConstants
 import org.opensaml.xmlsec.signature.support.SignatureException
 import org.opensaml.soap.client.http.AbstractPipelineHttpSOAPClient
@@ -39,7 +37,6 @@ import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport
 import net.shibboleth.utilities.java.support.httpclient.HttpClientBuilder
 import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipeline
 import org.opensaml.messaging.pipeline.httpclient.BasicHttpClientMessagePipeline
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException
 import org.opensaml.saml.saml2.binding.decoding.impl.HttpClientResponseSOAP11Decoder
 import org.opensaml.saml.saml2.binding.encoding.impl.HttpClientRequestSOAP11Encoder
 import org.opensaml.xmlsec.encryption.support.DecryptionException
@@ -147,7 +144,7 @@ class ArtifactResolver {
                         )
                     }
                 }
-                logger.debug("Context:${context}")
+                logger.debug("Context:$context")
 
                 val idp = provider.identityProvider!!
                 val clientBuilder = HttpClientBuilder()
@@ -164,7 +161,7 @@ class ArtifactResolver {
                     clientBuilder.connectionProxyPassword = idp.artifactServiceProxyPassword
                 }
 
-                soapClient.httpClient  = clientBuilder.buildClient()
+                soapClient.httpClient = clientBuilder.buildClient()
                 soapClient.send(idpMetadata.artifactResolutionService, context)
                 return context.inboundMessageContext.message
             } catch (e: Exception) {

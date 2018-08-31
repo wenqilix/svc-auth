@@ -6,13 +6,13 @@ import javax.xml.bind.annotation.XmlElementWrapper
 import javax.xml.bind.annotation.XmlElement
 
 @XmlAccessorType(XmlAccessType.FIELD)
-data class ResultSet (
+data class ResultSet(
     @field:XmlElement(name = "ESrvc_Result")
     var results: MutableList<Result> = mutableListOf<Result>()
 )
 
 @XmlAccessorType(XmlAccessType.FIELD)
-data class Result (
+data class Result(
     @field:XmlElementWrapper(name = "Auth_Result_Set")
     @field:XmlElement(name = "Row") var auths: MutableList<Auth>? = null,
 
