@@ -14,8 +14,9 @@ import auth.saml.credentials.resolver.EntityIdResolver
 import auth.saml.credentials.resolver.EndpointResolver
 import auth.saml.credentials.resolver.CredentialResolver
 import auth.helper.Properties
+import auth.helper.IdentityProvider
 
-open class IdentityProviderMetaData(val path: String, val id: String) {
+open class IdentityProviderMetaData(val identityProvider: IdentityProvider) {
     private val _entityId: String
     val artifactResolutionService: String
     val signingCredential: Credential
@@ -23,10 +24,10 @@ open class IdentityProviderMetaData(val path: String, val id: String) {
     init {
         try {
             InitializationService.initialize()
-            val idpMetadataResolver = FilesystemMetadataResolver(File(path))
+            val idpMetadataResolver = FilesystemMetadataResolver(File(identityProvider.metadataPath))
             idpMetadataResolver.setRequireValidMetadata(true)
             idpMetadataResolver.setParserPool(XMLObjectProviderRegistrySupport.getParserPool()!!)
-            idpMetadataResolver.setId(id)
+            idpMetadataResolver.setId(identityProvider.metadataId)
             idpMetadataResolver.initialize()
 
             _entityId = EntityIdResolver(idpMetadataResolver).resolveSingle()
@@ -44,12 +45,6 @@ open class IdentityProviderMetaData(val path: String, val id: String) {
 }
 
 class IdentityProvider {
-    object Singpass : IdentityProviderMetaData(
-        Properties.getPropertiesContext().singpass!!.identityProvider!!.metadataPath,
-        Properties.getPropertiesContext().singpass!!.identityProvider!!.metadataId
-    )
-    object Corppass : IdentityProviderMetaData(
-        Properties.getPropertiesContext().corppass!!.identityProvider!!.metadataPath,
-        Properties.getPropertiesContext().corppass!!.identityProvider!!.metadataId
-    )
+    object Singpass : IdentityProviderMetaData(Properties.getPropertiesContext().singpass!!.identityProvider!!)
+    object Corppass : IdentityProviderMetaData(Properties.getPropertiesContext().corppass!!.identityProvider!!)
 }

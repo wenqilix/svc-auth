@@ -16,8 +16,9 @@ import auth.saml.credentials.resolver.EndpointResolver
 import auth.saml.credentials.resolver.CredentialResolver
 import auth.helper.Cryptography
 import auth.helper.Properties
+import auth.helper.ServiceProvider
 
-open class ServiceProviderMetaData(val path: String, val id: String) {
+open class ServiceProviderMetaData(val serviceProvider: ServiceProvider) {
     val entityId: String
     val assertionConsumerService: String
     val credential: Credential
@@ -25,10 +26,10 @@ open class ServiceProviderMetaData(val path: String, val id: String) {
     init {
         try {
             InitializationService.initialize()
-            val spMetadataResolver = FilesystemMetadataResolver(File(path))
+            val spMetadataResolver = FilesystemMetadataResolver(File(serviceProvider.metadataPath))
             spMetadataResolver.setRequireValidMetadata(true)
             spMetadataResolver.setParserPool(XMLObjectProviderRegistrySupport.getParserPool()!!)
-            spMetadataResolver.setId(id)
+            spMetadataResolver.setId(serviceProvider.metadataId)
             spMetadataResolver.initialize()
 
             entityId = EntityIdResolver(spMetadataResolver).resolveSingle()
@@ -40,8 +41,7 @@ open class ServiceProviderMetaData(val path: String, val id: String) {
             criteriaSet.add(EvaluableUsageCredentialCriterion(UsageType.ENCRYPTION))
             credential = CredentialResolver(spMetadataResolver).resolveSingle(criteriaSet)
 
-            val properties = Properties.getPropertiesContext()
-            val key = Cryptography.generatePrivate(properties.singpass!!.serviceProvider!!.privateKey)
+            val key = Cryptography.generatePrivate(serviceProvider.privateKey)
             (credential as BasicCredential).setPrivateKey(key)
         } catch (e: ResolverException) {
             throw RuntimeException("Something went wrong reading sp metadata/credential", e)
@@ -50,12 +50,6 @@ open class ServiceProviderMetaData(val path: String, val id: String) {
 }
 
 class ServiceProvider {
-    object Singpass : ServiceProviderMetaData(
-        Properties.getPropertiesContext().singpass!!.serviceProvider!!.metadataPath,
-        Properties.getPropertiesContext().singpass!!.serviceProvider!!.metadataId
-    )
-    object Corppass : ServiceProviderMetaData(
-        Properties.getPropertiesContext().corppass!!.serviceProvider!!.metadataPath,
-        Properties.getPropertiesContext().corppass!!.serviceProvider!!.metadataId
-    )
+    object Singpass : ServiceProviderMetaData(Properties.getPropertiesContext().singpass!!.serviceProvider!!)
+    object Corppass : ServiceProviderMetaData(Properties.getPropertiesContext().corppass!!.serviceProvider!!)
 }
