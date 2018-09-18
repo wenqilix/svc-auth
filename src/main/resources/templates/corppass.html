@@ -226,7 +226,7 @@
                 <input type="hidden" name="authAccessState" th:value="${authAccess.toJson()}" />
                 <input type="hidden" name="thirdPartyAuthAccessState" th:value="${thirdPartyAuthAccess.toJson()}" />
                 <input type="hidden" name="userListState" th:value="${userList.toJson()}" />
-                <table class="table table-striped" th:unless="*{#lists.isEmpty(userInfos)}">
+                <table class="table table-striped" th:unless="*{#lists.isEmpty(users)}">
                     <thead>
                     <tr>
                         <th scope="col">Entity ID</th>
@@ -235,9 +235,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="userInfo, userInfoStat : *{userInfos}">
-                        <td th:text="${userInfo.entityId}" />
-                        <td th:text="${userInfo.userId}" />
+                    <tr th:each="user, userInfoStat : *{users}">
+                        <td th:text="${user.userInfo.entityId}" />
+                        <td th:text="${user.userInfo.userId}" />
                         <td>
                             <button type="submit" class="btn btn-secondary" name="select" th:value="${userInfoStat.index}">Select</button>
                         </td>

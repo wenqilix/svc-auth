@@ -3,10 +3,10 @@ package auth.corppass.model.mock
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.web.client.RestTemplate
 import org.springframework.http.converter.ByteArrayHttpMessageConverter
-import auth.corppass.model.UserInfo
+import auth.corppass.model.User
 
 data class UserList(
-    var userInfos: List<UserInfo> = emptyList()
+    var users: List<User> = emptyList()
 ) {
     fun populateFrom(url: String) {
         try {
@@ -15,7 +15,7 @@ data class UserList(
             val response = restTemplate.getForObject(url, ByteArray::class.java)
 
             val mapper = ObjectMapper()
-            userInfos = mapper.readValue(response, auth.corppass.model.mock.UserList::class.java).userInfos
+            users = mapper.readValue(response, UserList::class.java).users
         } catch (e: Exception) {
             e.printStackTrace()
         }

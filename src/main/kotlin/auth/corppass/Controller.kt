@@ -116,6 +116,10 @@ class DevelopmentController {
         val clientEntityId = requestParams.getOrDefault("clientEntityId", "")
         val clientEntityType = requestParams.getOrDefault("clientEntityType", "")
 
+        if (auth.endDate.isNullOrEmpty()) {
+            auth.endDate = "9999-12-31"
+        }
+
         if (thirdParty != null && thirdParty) {
             val clientIndex = thirdPartyAuthAccess.clients.indexOfFirst {
                 client -> client.entityId == clientEntityId && client.entityType == clientEntityType
@@ -187,9 +191,11 @@ class DevelopmentController {
         populateModelState(model, requestParams)
 
         val userList = model.asMap().get("userList") as UserList
-        val userInfo = userList.userInfos.get(index)
+        val user = userList.users.get(index)
 
-        model.addAttribute("userInfo", userInfo)
+        model.addAttribute("userInfo", user.userInfo)
+        model.addAttribute("authAccess", user.authAccess)
+        model.addAttribute("thirdPartyAuthAccess", user.thirdPartyAuthAccess)
         model.addAttribute("auth", Auth())
 
         return "corppass"
