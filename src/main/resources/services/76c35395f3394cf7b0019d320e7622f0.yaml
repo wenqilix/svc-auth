@@ -1,0 +1,8 @@
+guid: 76c35395f3394cf7b0019d320e7622f0
+public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKYeZ1pJWL7adv4bRdutKtxVYmdkWrbSbBgN/edB54Fk8G8RukHeuXC7dFIgtndB1TR4xHbfIEJ+Uo6RhvoKZvcCAwEAAQ==
+payload:
+  userId: api-mailer
+  authorization:
+    - id: '*'
+      scopes:
+        - jobalert:read

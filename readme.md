@@ -61,6 +61,31 @@
 | APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PASSWORD | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_LIFETIME_CLOCK_SKEW    | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_MOCK_USER_LIST_URL                                | Url to get a list of mock corppass users' info (dev, qa only) |
+| **`Service`**                                                  |                                                        |
+| APP_SERVICE_SERVICES_FOLDER_PATH                               | Url to configuration details of service in yaml file |
+| APP_SERVICE_SIGNATURE_LIFETIME_CLOCK_SKEW                      | Allowed time different to validate `nonce` parameter in signature payload |
+
+#### Services YAML Configuaration
+
+For each service that need to interface with `SVC-AUTH` for a valid JWT token, create a yaml configuration file in `resources/services` directory
+Each file should contain the guid identifier to the service, public key to decode and verify signature sent by the service and the payload to insert into the returned JWT token
+
+```
+// Arbitrary identifier to locate yaml configuration file of requesting service
+// The guid can be generated either by the hash of the service name or a timestamp
+// The filename of the yaml file follow the value of the guid `${guid}.yaml`
+guid: ... 
+// public rsa key to verify signature sent by requesting service
+public-key: ... 
+// As required by service. Can be anything. The payload will be inserted in the issued JWT as it is
+payload: 
+  // Sample payload content
+  userId: api-mailer
+  authorization:
+    - id: '*'
+      scopes:
+        - jobalert:read
+```
 
 
 #### `How to convert RSA private key to pcks8 format`

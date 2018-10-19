@@ -16,6 +16,9 @@ app:
     singpass:
         identity-provider:
             artifact-lifetime-clock-skew: 60_000
+    service:
+        services-folder-path: /app/shared/services
+        signature-lifetime-clock-skew: 25_000
 ---
 
 spring:

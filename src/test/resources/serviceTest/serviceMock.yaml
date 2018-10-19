@@ -1,0 +1,8 @@
+guid: serviceMock
+public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKYeZ1pJWL7adv4bRdutKtxVYmdkWrbSbBgN/edB54Fk8G8RukHeuXC7dFIgtndB1TR4xHbfIEJ+Uo6RhvoKZvcCAwEAAQ==
+payload:
+  userId: api-tester
+  authorization:
+    - id: '*'
+      scopes:
+        - foobar:read

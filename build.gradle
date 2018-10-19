@@ -41,7 +41,10 @@ docker {
 dockerRun {
     name 'svc-auth'
     image 'gdsace/svc-auth:latest'
-    volumes 'src/main/resources/certs': '/app/shared/certs'
+    volumes ([
+        'src/main/resources/certs': '/app/shared/certs',
+        'src/main/resources/services': '/app/shared/services'
+    ])
     ports '8000:8000'
     env ([
         'SPRING_PROFILES_ACTIVE': 'development',
@@ -115,6 +118,8 @@ dependencies {
     compile('com.sun.xml.bind:jaxb-core:2.3.0')
     compile('com.sun.xml.bind:jaxb-impl:2.3.0')
     compile('javax.activation:activation:1.1.1')
+
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.6'
 
     testCompile("org.springframework.boot:spring-boot-starter-test:$spring_boot_version")
     testCompile('org.mockito:mockito-core:2.21.0')

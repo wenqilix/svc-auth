@@ -11,6 +11,7 @@ class Properties : ApplicationContextAware {
     var token: Token? = null
     var singpass: Provider? = null
     var corppass: Provider? = null
+    var service: Services? = null
     var instrumentation: Instrumentation? = null
 
     companion object {
@@ -24,6 +25,11 @@ class Properties : ApplicationContextAware {
     override fun setApplicationContext(context: ApplicationContext) {
         applicationContext = context
     }
+}
+
+class Services {
+    lateinit var servicesFolderPath: String
+    var signatureLifetimeClockSkew: Long = 0
 }
 
 class Instrumentation {
