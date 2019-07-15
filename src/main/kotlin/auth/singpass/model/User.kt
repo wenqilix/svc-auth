@@ -7,7 +7,7 @@ data class User(
     var userName: String = "",
     var mobile: String = ""
 ) {
-    constructor(mapData: Map<String, Any>): this(
+    constructor(mapData: Map<String, Any>) : this(
         mapData.get("userName") as? String ?: "",
         mapData.get("mobile") as? String ?: ""
     )

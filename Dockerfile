@@ -8,5 +8,6 @@ ENTRYPOINT ["java", \
             "-Ddebug", \
             "-Djava.security.egd=file:/dev/./urandom", \
             "-jar", \
-            "/app.jar" \
+            "/app.jar", \
+            "--spring.config.location=file:/app/shared/application.yml" \
 ]

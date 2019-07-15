@@ -5,4 +5,5 @@ payload:
   authorization:
     - id: '*'
       scopes:
+        - profile:read
         - jobalert:read

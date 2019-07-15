@@ -3,7 +3,7 @@
 ### Run Locally
 
 ```bash
-./gradlew start
+./gradlew bootRun
 # default port is set to 8000
 ```
 
@@ -29,6 +29,7 @@
 | **`Jwt Token`**                                                |                                                        |
 | APP_TOKEN_PRIVATE_KEY                                          | Private key(pcks8 format) used to sign the Jwt         |
 | APP_TOKEN_SIGNATURE_ALGORITHM                                  | Signature Algorithm used to sign Jwt. Only support RSA algo |
+| APP_TOKEN_ENCRYPTION_JWK                                       | Json Web Key used to encrypt the content of JWT. Only support algo using AES-CBC and HMAC-SHA2 |
 | APP_TOKEN_EXPIRATION_TIME                                      | How many milliseconds will the Jwt be valid for        |
 | **`Singpass`**                                                 |                                                        |
 | APP_SINGPASS_HOMEPAGE_URL                                      | Homepage of the app using svc-auth for singpass        |
@@ -74,11 +75,11 @@ Each file should contain the guid identifier to the service, public key to decod
 // Arbitrary identifier to locate yaml configuration file of requesting service
 // The guid can be generated either by the hash of the service name or a timestamp
 // The filename of the yaml file follow the value of the guid `${guid}.yaml`
-guid: ... 
+guid: ...
 // public rsa key to verify signature sent by requesting service
-public-key: ... 
+public-key: ...
 // As required by service. Can be anything. The payload will be inserted in the issued JWT as it is
-payload: 
+payload:
   // Sample payload content
   userId: api-mailer
   authorization:
@@ -91,4 +92,50 @@ payload:
 #### `How to convert RSA private key to pcks8 format`
 ```bash
 openssl pkcs8 -topk8 -inform PEM -in private_key.pem -out private_key_pkcs8.pem -nocrypt
+```
+
+#### `Creating new asymmetric key pairs for new services`
+Generate private key:
+```bash
+  openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:512
+```
+Generate public key using the private key:
+```bash
+  openssl rsa -pubout -in private_key.pem -out public_key.pem
+```
+
+### Actuator
+
+By default /health and /info are accessible via WEB
+
+Refer to https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html
+
+Install it by adding this line in build.gradle
+
+```
+compile("org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version")
+```
+
+By default all endpoints are set to false
+
+./src/main/resources/application.yml
+
+```
+management:
+    endpoints:
+        enabled-by-default: false
+    endpoint:
+        health:
+            enabled: true
+```
+
+### Troubleshooting
+
+**Invalid Metadata or Private Key**
+
+```
+Remember the metadata/and private key body shouldn't contain "\n" or other special characters.
+(This issue is applicable to Nectar)
+
+echo -n "<?xml>..." > /sp_singpass.xml
 ```

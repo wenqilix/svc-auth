@@ -12,7 +12,7 @@ data class User(
     @field:XmlElement(name = "AuthAccess") val authAccess: AuthAccess = AuthAccess(),
     @field:XmlElement(name = "TPAuthAccess") val thirdPartyAuthAccess: ThirdPartyAuthAccess = ThirdPartyAuthAccess()
 ) {
-    constructor(mapData: Map<String, Any>): this(
+    constructor(mapData: Map<String, Any>) : this(
         UserInfo(mapData.get("userInfo") as? Map<String, Any> ?: mapOf<String, Any>()),
         AuthAccess(mapData.get("authAccess") as? Map<String, Any> ?: mapOf<String, Any>()),
         ThirdPartyAuthAccess(mapData.get("thirdPartyAuthAccess") as? Map<String, Any> ?: mapOf<String, Any>())

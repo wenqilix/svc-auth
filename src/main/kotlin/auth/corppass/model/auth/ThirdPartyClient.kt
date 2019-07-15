@@ -13,7 +13,7 @@ data class ThirdPartyClient(
     @field:XmlElementWrapper(name = "Auth_Result_Set")
     @field:XmlElement(name = "Row") var auths: MutableList<Auth> = mutableListOf<Auth>()
 ) {
-    constructor(mapData: Map<String, Any>): this(
+    constructor(mapData: Map<String, Any>) : this(
         mapData.get("entityId") as? String ?: "",
         mapData.get("entityType") as? String ?: "",
         (mapData.get("auths") as? List<Map<String, Any>> ?: listOf<Map<String, Any>>()).map {

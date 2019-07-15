@@ -24,7 +24,7 @@ data class ThirdPartyAuthAccess(
     @field:XmlElement(name = "Result_Set")
     var clients: MutableList<ThirdPartyClient> = mutableListOf<ThirdPartyClient>()
 ) {
-    constructor(mapData: Map<String, Any>): this(
+    constructor(mapData: Map<String, Any>) : this(
         mapData.get("entityId") as? String ?: "",
         mapData.get("entityStatus") as? String,
         mapData.get("entityType") as? String ?: "",

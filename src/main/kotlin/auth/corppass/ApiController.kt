@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import io.jsonwebtoken.JwtException
+import org.jose4j.jwt.consumer.InvalidJwtException
 import auth.helper.Jwt
 import auth.corppass.model.User
 
@@ -30,9 +30,9 @@ class ApiController {
         try {
             val token = bearerToken.replace("Bearer ", "")
             val attributes: Map<String, Any> = jwt.parseCorppass(token)
-            val user: User = User(attributes)
+            val user = User(attributes)
 
-            val headers: HttpHeaders = HttpHeaders()
+            val headers = HttpHeaders()
             headers.add(HEADER_STRING, jwt.buildCorppass(user.toMap()))
 
             body.put("success", true)
@@ -41,7 +41,7 @@ class ApiController {
         } catch (e: Exception) {
             var httpStatus = HttpStatus.BAD_REQUEST
             when (e) {
-                is JwtException -> {
+                is InvalidJwtException -> {
                     httpStatus = HttpStatus.UNAUTHORIZED
                 }
             }

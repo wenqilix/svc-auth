@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import io.jsonwebtoken.JwtException
+import org.jose4j.jwt.consumer.InvalidJwtException
 import auth.helper.Jwt
 import auth.singpass.model.User
 
-@RestController
+@RestController("singpassRestController")
 @CrossOrigin
 @RequestMapping("/sp")
 class ApiController {
@@ -30,9 +30,9 @@ class ApiController {
         try {
             val token = bearerToken.replace("Bearer ", "")
             val attributes: Map<String, Any> = jwt.parseSingpass(token)
-            val user: User = User(attributes)
+            val user = User(attributes)
 
-            val headers: HttpHeaders = HttpHeaders()
+            val headers = HttpHeaders()
             headers.add(HEADER_STRING, jwt.buildSingpass(user.toMap()))
 
             body.put("success", true)
@@ -41,7 +41,7 @@ class ApiController {
         } catch (e: Exception) {
             var httpStatus = HttpStatus.BAD_REQUEST
             when (e) {
-                is JwtException -> {
+                is InvalidJwtException -> {
                     httpStatus = HttpStatus.UNAUTHORIZED
                 }
             }

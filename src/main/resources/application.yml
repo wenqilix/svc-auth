@@ -13,12 +13,19 @@ app:
     token:
         signature-algorithm: RS512
         expiration-time: 1800_000
+        private-key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDBZ1duiBouc4Wm5tFawSy1FYum7ZQEjGvN9P1M8F/aIWVPDHWOXZld/VsqyskJ7tq3i6TiP8F83CuNZvulxq01sXoNGD+yTIF3KKqiDPKNcuZkLa5MNUpZD01h7GtzLIpEKpoBbxYVkbYtSS8j3ouRW/oqM2xciu9Hm6kU1tWXPKcgqiR9VEpIeBx9OoxcxsZaJFTji0Tf2hT7FXCALRqjHyGxHewREfd1gm1tJB4/1GRTJNktZehSvBTVMgSEZEdBeCSYWVqcCQYcpwWaBE65ybg+tYKR62hOM732fmSinQEt7fRGXeQO4Y1Y8B8aGt3udty6otTbg6t/qPcRX3CFAgMBAAECggEAFEGOlrUKiPLwfJqQMsEovY6UIdegORm78MZIAVbrsxzsT2supMqI1Z9DfSfgBnpNzguCKXAkA7/Lj/PJR4OXgJgmAFkZ0sLQjHpl5LMWdFokZzmhl7m9H7bKlAb++gEgOiN8HcpUtc2dFwEjPs6AL6lCekkIgGjMxuM2wkf99ujkvAdXdJ8V93wwNbSiFlnuBTxbP5DMKD3J96qX7rpCaMfh6BQAEIP7ihshYEnSQXSFMxDNwiBHi+0HUQy1Ypv9VavBhUFFcZ5mBXtSzSo6Bz2TqaVwTIEmiuPXliOi2YMmOpNrVzjB7PT8A3KzsCVzemeqVUtwGICEAWG6+u+8AQKBgQDezmU73uN8zI8hVu1vNn94/6uiDIo9AtaBhR1dZkGT/7cz+huwCF//LmHQ7mflCvqoBJvc2wWsh9MLQbR8v5q2jQY8M908GVW9pdLIJQFpouR1WWT8Lq+XED2UlYAORxMEP8Z1ZlzJoHNhj5LaYJ65O90JmHqE8D+vHK/fcYCj8QKBgQDeN4/3sBlIw3AnPMvtmQAgoRibH1tMJqNrRqggeoJ1ODTOr6CpqkKG+BwBg7AxoAKphmeJo5rzIdz7U31KVIyzQO+NDdqZ7V90elv8sWR9zJ3Xz34aTks4B0Vva+m2idxY6Z4GiLpY4CY6Y/eOnRjzLIQqXs8yiC86+SL/4RyZ1QKBgCypcM+EiVNN6e8D7spZQUou7eeo3dkHBZqm5VEAm2qgWsf3fa9Wrm+Hi6IG+BqIjeA6NEgcO1HvVBWwkQ5klg27zSEqQFG4vmAqqkrmaBcVyPfg+IY4kYgVgFKVeTrjcmNqqUyFPVpJaHeJASX3MjntTwyKXRziz9E5TePba67xAoGAKUE5eit4Vjjqbm5sEb1Q973QuqPUqEuYFUd12SnFZIu9yg1zD2yrkzEmyeUv5damB+ELAdOc5byIsSQr44vU30aT8qT6y471JMO+pigs1uoQ98rux2V3s3wuGOR47Eml3d/pVZ82sV9T2Y1LnW9u/V5rXw5g+ymrUxCDveuGCs0CgYEAs3lKxDImcQG05aWJsW86YOU9GfSNdANtlLyEK6GKwhWakgFNNPudWr9gbZW5FQ5ietV+eJpRvcKDr3TYzhuZh923/MZe0Eia4PHce7Sumbbvr+o4dJo6Pfvw8nxtIFnLkDbA5Jsa/qqMUuF+38GKj+TY1IxcR7zVbr+Z0VhYOmE=
     singpass:
         identity-provider:
             artifact-lifetime-clock-skew: 60_000
     service:
         services-folder-path: /app/shared/services
         signature-lifetime-clock-skew: 25_000
+management:
+    endpoints:
+        enabled-by-default: false
+    endpoint:
+        health:
+            enabled: true
 ---
 
 spring:

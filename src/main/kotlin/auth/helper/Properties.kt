@@ -43,7 +43,9 @@ class ZipkinInstrumentation {
 
 class Token {
     lateinit var privateKey: String
+    lateinit var publicKeyPath: String
     lateinit var signatureAlgorithm: String
+    var encryptionJwk: String? = null
     var expirationTime: Long = 0
 }
 

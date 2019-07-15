@@ -16,7 +16,7 @@ data class AuthAccess(
     @field:XmlElement(name = "Result_Set")
     var auths: MutableList<Auth> = mutableListOf<Auth>()
 ) {
-    constructor(mapData: Map<String, Any>): this(
+    constructor(mapData: Map<String, Any>) : this(
         (mapData.get("auths") as? List<Map<String, Any>> ?: listOf<Map<String, Any>>()).map {
             auth -> Auth(auth)
         }.toMutableList()

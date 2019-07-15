@@ -29,7 +29,7 @@ data class Auth(
 
     @field:XmlElement(name = "Parameter") var parameters: MutableList<Parameter> = mutableListOf<Parameter>()
 ) {
-    constructor(mapData: Map<String, Any>): this(
+    constructor(mapData: Map<String, Any>) : this(
         mapData.get("subEntityId") as? String,
         mapData.get("role") as? String,
         mapData.get("startDate") as? String ?: "",

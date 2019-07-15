@@ -43,7 +43,7 @@ data class UserInfo(
     @field:XmlJavaTypeAdapter(value = EmptyStringXmlAdapter::class)
     var entityName: String? = null
 ) {
-    constructor(mapData: Map<String, Any>): this(
+    constructor(mapData: Map<String, Any>) : this(
         mapData.get("accountType") as? String ?: "",
         mapData.get("userId") as? String ?: "",
         mapData.get("userCountry") as? String ?: "",

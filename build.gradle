@@ -38,22 +38,6 @@ docker {
     buildArgs(['JAR_FILE': "${jar.archiveName}"])
 }
 
-dockerRun {
-    name 'svc-auth'
-    image 'gdsace/svc-auth:latest'
-    volumes ([
-        'src/main/resources/certs': '/app/shared/certs',
-        'src/main/resources/services': '/app/shared/services'
-    ])
-    ports '8000:8000'
-    env ([
-        'SPRING_PROFILES_ACTIVE': 'development',
-        'APP_TOKEN_PRIVATE_KEY': 'MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKHbw77friIDt3Rg+hhc8Oius02ZN9UcOf1gZJ/ayyTyOtC7LpfW3A9T/UY/OttVkdd8RJuI/AuFzCkMgUvzf8cHbgqtlG7UxTuC3CiMrC6aUZvKdvBZF3ENKATXq3c8CPKt7uwXOraSMCdt05PLY2sVkpQltLrGhixMFKNv+n+BAgMBAAECgYAj4pd5gBoZTH2l/cI1GJYI4IK8V5X7V7C7rl1g259iZ5oGoRlpbKeJdnOW2XnxGv2kqtaDLVHENDvZdf5MmoXfflDEey8XbsopQJyHbyIVobk7t7dt2sDCN0lhFT/WGWPQQjugZROWt0Iwqz4a8GAiQgkDzoo5TBPA8ZYwj0D3qQJBAMzWdZluPuwUvWEKt5RaHb1xzEfvEcFf6gC0zGx/QAnvswKJ9oe9Axux7OKVDppx8Q7t+4S+2PI2xF8jwE6/V2sCQQDKSSo9WWlZGqCLo9feiQXWPABnGIbZJFvhyOBHWvOxw/HvVYylcblVJHruxr65t1LfyfNffSBV0xH+OPr+z/vDAkA9mEOWlpMvNHFaC/n2Dz8gJ2cRPm9tYaUg/zz1ZzJfioeevNO4L3sOyer8m2vfv2GIZsGaQjVEaHmWTk7WnyzvAkEAp9CU4zpm5E3rvIzbTDl+hyFV8DFvxXqdYy2Dqo6wttvovPXK7YHwD8to1Og6V9XXQeLHLYOfrLOjLLVWvMgMgwJAGNhq9z55x0Mu7AmMEX3Zh7ocGauDJBI1XUFrW1w/SXeWD2inPcvEynYKT9SfLPzcBtOzRpmX5+fv+Wtn0KZqag=='
-    ])
-    daemonize false
-    clean true
-}
-
 detekt {
     version = detekt_version
     defaultProfile {
@@ -65,10 +49,6 @@ detekt {
 
 configurations {
     ktlint
-}
-
-task start(type: GradleBuild) {
-    tasks = ['build', 'docker', 'dockerRun']
 }
 
 task ktlint(type: JavaExec, group: "verification") {
@@ -99,12 +79,14 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     compile("org.springframework.boot:spring-boot-starter-web:$spring_boot_version")
     compile("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
-    compile('io.jsonwebtoken:jjwt:0.9.1')
     compile("org.springframework.boot:spring-boot-starter-thymeleaf:$spring_boot_version")
     compile('com.google.guava:guava:26.0-jre')
     compile('io.opentracing.contrib:opentracing-spring-web-autoconfigure:0.0.4')
     compile('io.opentracing.brave:brave-opentracing:0.20.0')
     compile('io.zipkin.reporter:zipkin-sender-okhttp3:0.10.0')
+    compile("org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version")
+    compile('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.6')
+    compile('org.bitbucket.b_c:jose4j:0.6.5')
 
     compile("org.opensaml:opensaml-core:$opensaml_version")
     compile("org.opensaml:opensaml-saml-api:$opensaml_version")
@@ -119,13 +101,11 @@ dependencies {
     compile('com.sun.xml.bind:jaxb-impl:2.3.0')
     compile('javax.activation:activation:1.1.1')
 
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.6'
-
     testCompile("org.springframework.boot:spring-boot-starter-test:$spring_boot_version")
     testCompile('org.mockito:mockito-core:2.21.0')
     testCompile('org.apache.httpcomponents:httpclient:4.5.6')
 
-    ktlint("com.github.shyiko:ktlint:0.27.0")
+    ktlint("com.github.shyiko:ktlint:0.30.0")
 }
 test {
     reports {

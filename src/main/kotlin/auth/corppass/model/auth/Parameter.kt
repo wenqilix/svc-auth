@@ -12,7 +12,7 @@ data class Parameter(
     @field:XmlValue var value: String = "",
     @field:XmlAttribute(name = "name") var name: String = ""
 ) {
-    constructor(mapData: Map<String, String>): this(
+    constructor(mapData: Map<String, String>) : this(
         mapData.getOrDefault("value", ""),
         mapData.getOrDefault("name", "")
     )

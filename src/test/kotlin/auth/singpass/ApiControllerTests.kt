@@ -16,7 +16,6 @@ import org.mockito.Mockito
 import org.mockito.InjectMocks
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import io.jsonwebtoken.JwtException
 import auth.helper.Jwt
 
 @RunWith(SpringRunner::class)
@@ -62,16 +61,10 @@ class ApiControllerUnitTests {
     @Test
     fun refreshWithInvalidToken() {
         val invalidToken = "general.invalid.token"
-        val invalidJWTToken = "jwt.invalid.token"
         Mockito.`when`(mockJwt.parseSingpass(invalidToken)).thenThrow(RuntimeException())
-        Mockito.`when`(mockJwt.parseSingpass(invalidJWTToken)).thenThrow(JwtException("error"))
 
         var result = apiController.refresh(invalidToken)
         assertNotNull(result)
         assertEquals(HttpStatus.BAD_REQUEST, result.statusCode)
-
-        result = apiController.refresh(invalidJWTToken)
-        assertNotNull(result)
-        assertEquals(HttpStatus.UNAUTHORIZED, result.statusCode)
     }
 }
