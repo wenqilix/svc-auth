@@ -7,9 +7,9 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
-import zipkin.Span
-import zipkin.reporter.okhttp3.OkHttpSender
-import zipkin.reporter.AsyncReporter
+import zipkin2.Span
+import zipkin2.reporter.okhttp3.OkHttpSender
+import zipkin2.reporter.AsyncReporter
 
 import auth.helper.Properties
 
@@ -56,7 +56,7 @@ class Application {
                 .localServiceName(
                     getZipkinApplicationName(APPLICATION_NAME)
                 )
-                .reporter(reporter)
+                .spanReporter(reporter)
                 .build()
         return BraveTracer.create(braveTracer)
     }

@@ -5,18 +5,16 @@ import org.junit.runner.RunWith
 import org.junit.Before
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.InjectMocks
-import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
 import auth.helper.Jwt
+import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.MockKAnnotations
+import io.mockk.every
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -33,35 +31,35 @@ class ApiControllerIntegrationTests {
     }
 }
 
-@RunWith(MockitoJUnitRunner::class)
 class ApiControllerUnitTests {
 
-    @Mock
+    @MockK
     lateinit var mockJwt: Jwt
 
-    @InjectMocks
+    @InjectMockKs
     lateinit var apiController: ApiController
 
     @Before
     fun setupMock() {
-        MockitoAnnotations.initMocks(this)
+        MockKAnnotations.init(this)
     }
 
     @Test
     fun refresh() {
         val validToken = "valid.token.value"
-        Mockito.`when`(mockJwt.parseSingpass(validToken)).thenReturn(mapOf("userName" to "foo", "mobile" to "bar"))
+        every { mockJwt.parseSingpass(validToken) } returns mapOf("userName" to "foo", "mobile" to "bar")
+        every { mockJwt.buildSingpass(mapOf("userName" to "foo", "mobile" to "bar")) } returns "refreshed.token.value"
 
         val result = apiController.refresh("Bearer $validToken")
         assertNotNull(result)
         assertEquals(HttpStatus.OK, result.statusCode)
-        assertTrue(result.body["success"] as Boolean)
+        assertEquals(listOf("refreshed.token.value"), result.getHeaders().get(ApiController.HEADER_STRING))
     }
 
     @Test
     fun refreshWithInvalidToken() {
         val invalidToken = "general.invalid.token"
-        Mockito.`when`(mockJwt.parseSingpass(invalidToken)).thenThrow(RuntimeException())
+        every { mockJwt.parseSingpass(invalidToken) } throws RuntimeException()
 
         var result = apiController.refresh(invalidToken)
         assertNotNull(result)

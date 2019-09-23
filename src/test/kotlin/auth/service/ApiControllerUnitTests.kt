@@ -1,22 +1,20 @@
 package auth.service
 
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.junit.Before
 import org.junit.Assert.assertEquals
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.InjectMocks
-import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.http.HttpStatus
 import auth.helper.Properties
 import auth.helper.Services
 import auth.helper.SignatureAuthenticator
 import auth.helper.Jwt
 import auth.service.model.Service
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.MockKAnnotations
+import io.mockk.every
 
-@RunWith(MockitoJUnitRunner::class)
 class ApiControllerUnitTests {
     val mockSignature = "PTET6SK33zYim5avg+FX3sepa6rH/IB0dNqXuc1l3Uu4L6+4vkAoExMTQZXhr5JEFrPOZVLajLpqeUjMYiToFw=="
     val username = "serviceMock"
@@ -33,28 +31,28 @@ class ApiControllerUnitTests {
             )
         )
 
-    @Mock
+    @RelaxedMockK
     lateinit var mockJwt: Jwt
 
-    @Mock
+    @MockK
     lateinit var mockProperties: Properties
 
-    @Mock
+    @MockK
     lateinit var mockSignatureAuthenticator: SignatureAuthenticator
 
-    @InjectMocks
+    @InjectMockKs
     lateinit var apiController: ApiController
 
     @Before
     fun setupMock() {
         mockServiceProps.servicesFolderPath = "src/test/resources/serviceTest"
-        MockitoAnnotations.initMocks(this)
+        MockKAnnotations.init(this)
     }
 
     @Test
     fun requestTokenSuccessfully() {
-        Mockito.`when`(mockSignatureAuthenticator.verifyNonce(nonce)).thenReturn(true)
-        Mockito.`when`(mockSignatureAuthenticator.verifyService(nonce, mockSignature, mockService)).thenReturn(true)
+        every { mockSignatureAuthenticator.verifyNonce(nonce) } returns true
+        every { mockSignatureAuthenticator.verifyService(nonce, mockSignature, mockService) } returns true
 
         val result = apiController.token(username, mockSignature, nonce, "MCF")
         assertEquals(HttpStatus.OK, result.statusCode)
@@ -62,8 +60,8 @@ class ApiControllerUnitTests {
 
     @Test
     fun requestTokenWithUnathorizedNonce() {
-        Mockito.`when`(mockSignatureAuthenticator.verifyNonce(nonce)).thenReturn(false)
-        Mockito.`when`(mockSignatureAuthenticator.verifyService(nonce, mockSignature, mockService)).thenReturn(true)
+        every { mockSignatureAuthenticator.verifyNonce(nonce) } returns false
+        every { mockSignatureAuthenticator.verifyService(nonce, mockSignature, mockService) } returns true
 
         val result = apiController.token(username, mockSignature, nonce, "MCF")
         assertEquals(HttpStatus.UNAUTHORIZED, result.statusCode)
@@ -71,9 +69,9 @@ class ApiControllerUnitTests {
 
     @Test
     fun requestTokenWithUnathorizedSignature() {
-        Mockito.`when`(mockProperties.service).thenReturn(mockServiceProps)
-        Mockito.`when`(mockSignatureAuthenticator.verifyNonce(nonce)).thenReturn(true)
-        Mockito.`when`(mockSignatureAuthenticator.verifyService(nonce, mockSignature, mockService)).thenReturn(false)
+        every { mockProperties.service } returns mockServiceProps
+        every { mockSignatureAuthenticator.verifyNonce(nonce) } returns true
+        every { mockSignatureAuthenticator.verifyService(nonce, mockSignature, mockService) } returns false
 
         val result = apiController.token(username, mockSignature, nonce, "MCF")
         assertEquals(HttpStatus.UNAUTHORIZED, result.statusCode)

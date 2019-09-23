@@ -1,18 +1,15 @@
 package auth.helper
 
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 import org.junit.Before
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import auth.service.model.Service
+import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.MockKAnnotations
+import io.mockk.every
 
-@RunWith(MockitoJUnitRunner::class)
 class SignatureAuthenticatorTests {
     var mockServiceProps = Services()
     val validSignature = "hCcSOrZF8l7wdS8a8Sd17PMGhAbViKGb8J1+HrbTZSC4aRijIuoB10/Bi6eT+9BGHbmPu1ET9iJpJyq2MHrVkg=="
@@ -31,16 +28,16 @@ class SignatureAuthenticatorTests {
         )
     )
 
-    @Mock
+    @MockK
     lateinit var mockProperties: Properties
 
-    @InjectMocks
+    @InjectMockKs
     lateinit var signatureAuthenticator: SignatureAuthenticator
 
     @Before
     fun setupMock() {
         mockServiceProps.signatureLifetimeClockSkew = mockSignatureLifetimeClockSkew
-        MockitoAnnotations.initMocks(this)
+        MockKAnnotations.init(this)
     }
 
     @Test
@@ -66,7 +63,7 @@ class SignatureAuthenticatorTests {
 
     @Test
     fun verifyNoncePassed() {
-        Mockito.`when`(mockProperties.service).thenReturn(mockServiceProps)
+        every { mockProperties.service } returns mockServiceProps
         val nonceToVerify = (System.currentTimeMillis() - 5000).toString()
 
         val result = signatureAuthenticator.verifyNonce(nonceToVerify)
@@ -76,7 +73,7 @@ class SignatureAuthenticatorTests {
 
     @Test
     fun verifyNonceFailed() {
-        Mockito.`when`(mockProperties.service).thenReturn(mockServiceProps)
+        every { mockProperties.service } returns mockServiceProps
         val nonceToVerify = (System.currentTimeMillis() - mockSignatureLifetimeClockSkew).toString()
 
         val result = signatureAuthenticator.verifyNonce(nonceToVerify)
