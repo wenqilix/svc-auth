@@ -4,6 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.core.type.TypeReference
 
 @Configuration
 @ConfigurationProperties(prefix = "app")
@@ -54,6 +56,7 @@ class Provider {
     var mockUserListUrl: String? = null
     var serviceProvider: ServiceProvider? = null
     var identityProvider: IdentityProvider? = null
+    var additionalInfoRequest = AdditionalInfoRequest()
 }
 
 class ServiceProvider {
@@ -73,4 +76,21 @@ class IdentityProvider {
     var artifactServiceProxyUsername: String? = null
     var artifactServiceProxyPassword: String? = null
     var artifactLifetimeClockSkew: Long = 0
+}
+
+class AdditionalInfoRequest {
+    var url: String? = null
+    var httpMethod: String = "GET"
+    var body: String? = null
+    var staticJson: String? = null
+    val static: Map<String, Any>? by lazy {
+        var staticMap: Map<String, Any>?
+        if (this.staticJson == null) {
+            staticMap = null
+        } else {
+            val mapper = ObjectMapper()
+            staticMap = mapper.readValue(this.staticJson, object : TypeReference<Map<String, Any>>() {})
+        }
+        staticMap
+    }
 }

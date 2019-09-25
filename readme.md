@@ -46,6 +46,10 @@
 | APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_USERNAME | Whitelisted proxy username to resolve artifact with Singpass |
 | APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PASSWORD | Whitelisted proxy password to resolve artifact with Singpass |
 | APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_LIFETIME_CLOCK_SKEW    | Allowed time different to validate resolved artifact lifetime |
+| APP_SINGPASS_ADDITIONAL_INFO_REQUEST_URL                       | Url to fetch additional info into the token            |
+| APP_SINGPASS_ADDITIONAL_INFO_REQUEST_HTTP_METHOD               | Http method use to fetch the additional info url e.g GET/POST |
+| APP_SINGPASS_ADDITIONAL_INFO_REQUEST_BODY                      | Any body to be passed in for fetch additional info     |
+| APP_SINGPASS_ADDITIONAL_INFO_REQUEST_STATIC_JSON               | Static JSON payload to be added into token             |
 | **`Corppass`**                                                 |                                                        |
 | APP_CORPPASS_HOMEPAGE_URL                                      | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_SERVICE_PROVIDER_PRIVATE_KEY                      | Same as Singpass but for Corppass                      |
@@ -62,6 +66,10 @@
 | APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PASSWORD | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_LIFETIME_CLOCK_SKEW    | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_MOCK_USER_LIST_URL                                | Url to get a list of mock corppass users' info (dev, qa only) |
+| APP_CORPPASS_ADDITIONAL_INFO_REQUEST_URL                       | Url to fetch additional info into the token            |
+| APP_CORPPASS_ADDITIONAL_INFO_REQUEST_HTTP_METHOD               | Http method use to fetch the additional info url e.g GET/POST |
+| APP_CORPPASS_ADDITIONAL_INFO_REQUEST_BODY                      | Any body to be passed in for fetch additional info     |
+| APP_CORPPASS_ADDITIONAL_INFO_REQUEST_STATIC_JSON               | Static JSON payload to be added into token             |
 | **`Service`**                                                  |                                                        |
 | APP_SERVICE_SERVICES_FOLDER_PATH                               | Url to configuration details of service in yaml file |
 | APP_SERVICE_SIGNATURE_LIFETIME_CLOCK_SKEW                      | Allowed time different to validate `nonce` parameter in signature payload |

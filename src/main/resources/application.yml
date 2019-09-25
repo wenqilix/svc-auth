@@ -38,6 +38,8 @@ app:
         homepage-url: http://localhost:3000/
         service-provider:
             login-url: http://localhost:4000/login
+        additional-info-request:
+            static-json: '{"foo":"bar"}'
     corppass:
         homepage-url: http://localhost:3001/
         service-provider:

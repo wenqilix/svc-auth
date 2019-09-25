@@ -2,6 +2,12 @@ package auth.helper
 
 import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
+import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.core.ParameterizedTypeReference
 import org.jose4j.jwa.AlgorithmConstraints
 import org.jose4j.jwa.AlgorithmConstraints.ConstraintType.WHITELIST
 import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers
@@ -15,31 +21,35 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder
 import java.security.Key
 import java.nio.file.Files
 import java.nio.file.Paths
+import org.slf4j.LoggerFactory
+
+class AdditionalInfoRequestException(message: String) : Exception(message)
 
 @Service
-class Jwt {
+class Jwt(restTemplateBuilder: RestTemplateBuilder) {
+    private val logger = LoggerFactory.getLogger(Jwt::class.java)
     @Autowired
-    internal lateinit var properties: Properties
-    internal val signingAlgConstraints = AlgorithmConstraints(
+    private lateinit var properties: Properties
+    private val signingAlgConstraints = AlgorithmConstraints(
         WHITELIST,
         AlgorithmIdentifiers.RSA_USING_SHA256,
         AlgorithmIdentifiers.RSA_USING_SHA384,
         AlgorithmIdentifiers.RSA_USING_SHA512
     )
-    internal val encryptionAlgConstraints = AlgorithmConstraints(
+    private val encryptionAlgConstraints = AlgorithmConstraints(
         WHITELIST,
         ContentEncryptionAlgorithmIdentifiers.AES_128_CBC_HMAC_SHA_256,
         ContentEncryptionAlgorithmIdentifiers.AES_192_CBC_HMAC_SHA_384,
         ContentEncryptionAlgorithmIdentifiers.AES_256_CBC_HMAC_SHA_512
     )
-    internal val token by lazy {
+    private val token by lazy {
         properties.token!!
     }
-    internal val signingKey: Key by lazy {
+    private val signingKey: Key by lazy {
         signingAlgConstraints.checkConstraint(this.token.signatureAlgorithm)
         Cryptography.generatePrivate(this.token.privateKey)
     }
-    internal val verificationKey: Key by lazy {
+    private val verificationKey: Key by lazy {
         signingAlgConstraints.checkConstraint(this.token.signatureAlgorithm)
         val publicKey = String(Files.readAllBytes(Paths.get(this.token.publicKeyPath)))
             .replace("-----BEGIN PUBLIC KEY-----", "")
@@ -47,7 +57,7 @@ class Jwt {
             .replace("\n", "")
         Cryptography.generatePublic(publicKey)
     }
-    internal val encryptionJwk: JsonWebKey? by lazy {
+    private val encryptionJwk: JsonWebKey? by lazy {
         var jwk: JsonWebKey? = null
         if (this.token.encryptionJwk != null) {
             jwk = JsonWebKey.Factory.newJwk(this.token.encryptionJwk)
@@ -55,8 +65,9 @@ class Jwt {
         }
         jwk
     }
+    private val restTemplate = restTemplateBuilder.build()
 
-    fun build(issuer: String, claims: Map<String, Any>): String {
+    private fun create(issuer: String, claims: Map<String, Any>): String {
         val jwtClaims = JwtClaims()
         jwtClaims.setIssuer(issuer)
         jwtClaims.setExpirationTimeMinutesInTheFuture((this.token.expirationTime / 60_000).toFloat())
@@ -78,6 +89,39 @@ class Jwt {
             jwe.setPayload(jws.getCompactSerialization())
             return jwe.getCompactSerialization()
         }
+    }
+
+    fun build(issuer: String, claims: Map<String, Any>): String {
+        val token = this.create(issuer, claims)
+
+        val additionalInfoRequest: AdditionalInfoRequest? = when (issuer) {
+            "Singpass" -> properties.singpass!!.additionalInfoRequest
+            "Corppass" -> properties.corppass!!.additionalInfoRequest
+            else -> null
+        }
+        if (additionalInfoRequest != null) {
+            if (additionalInfoRequest.url != null) {
+                try {
+                    val headers = HttpHeaders()
+                    headers.add("Authorization", "Bearer $token")
+                    headers.setContentType(MediaType.APPLICATION_JSON)
+                    val request = HttpEntity<String>(additionalInfoRequest.body, headers)
+                    val respType = object : ParameterizedTypeReference<Map<String, Any>>() {}
+                    val response = this.restTemplate.exchange(additionalInfoRequest.url, HttpMethod.valueOf(additionalInfoRequest.httpMethod), request, respType)
+
+                    val claimsWithAdditionalInfo = claims.plus(mapOf("additionalInfo" to response.getBody()))
+
+                    return this.create(issuer, claimsWithAdditionalInfo)
+                } catch (e: Exception) {
+                    logger.error("Error in additional info request", e)
+                    throw AdditionalInfoRequestException("Error while fetching additional info")
+                }
+            } else if (additionalInfoRequest.static != null) {
+                val claimsWithAdditionalInfo = claims.plus(mapOf("additionalInfo" to additionalInfoRequest.static!!))
+                return this.create(issuer, claimsWithAdditionalInfo)
+            }
+        }
+        return token
     }
 
     fun buildSingpass(claims: Map<String, Any>): String {
