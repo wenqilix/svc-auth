@@ -6,6 +6,8 @@ import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.core.type.TypeReference
+import auth.plugin.ClaimsMutator
+import auth.plugin.DefaultClaimsMutator
 
 @Configuration
 @ConfigurationProperties(prefix = "app")
@@ -49,6 +51,21 @@ class Token {
     lateinit var signatureAlgorithm: String
     var encryptionJwk: String? = null
     var expirationTime: Long = 0
+    var plugin = Plugin()
+}
+
+class Plugin {
+    var jarFileUrl: String? = null
+    var classPath: String? = null
+    val instance: ClaimsMutator by lazy {
+        if (this.jarFileUrl != null && this.classPath != null) {
+            val loader = PluginLoader<ClaimsMutator>()
+            val plugin = loader.loadClass(this.jarFileUrl!!, this.classPath!!)
+            plugin
+        } else {
+            DefaultClaimsMutator()
+        }
+    }
 }
 
 class Provider {

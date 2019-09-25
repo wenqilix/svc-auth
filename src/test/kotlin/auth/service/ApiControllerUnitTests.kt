@@ -14,6 +14,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.MockKAnnotations
 import io.mockk.every
+import io.mockk.verify
 
 class ApiControllerUnitTests {
     val mockSignature = "PTET6SK33zYim5avg+FX3sepa6rH/IB0dNqXuc1l3Uu4L6+4vkAoExMTQZXhr5JEFrPOZVLajLpqeUjMYiToFw=="
@@ -56,6 +57,7 @@ class ApiControllerUnitTests {
 
         val result = apiController.token(username, mockSignature, nonce, "MCF")
         assertEquals(HttpStatus.OK, result.statusCode)
+        verify { mockJwt.invoke("build").withArguments(listOf("MCF", mockService.payload)) }
     }
 
     @Test

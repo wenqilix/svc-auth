@@ -16,7 +16,6 @@ import auth.helper.Jwt
 import auth.helper.Properties
 import auth.helper.SignatureAuthenticator
 import auth.service.model.Service
-import auth.service.model.Payload
 
 @RestController("serviceRestController")
 @CrossOrigin
@@ -87,7 +86,6 @@ class ApiController {
             return ResponseEntity<Any>(body, HttpStatus.BAD_REQUEST)
         }
 
-        val payload = Payload(service.payload)
-        return ResponseEntity<Any>(jwt.build(issuer, payload.toMap()), HttpStatus.OK)
+        return ResponseEntity<Any>(jwt.build(issuer, service.payload), HttpStatus.OK)
     }
 }

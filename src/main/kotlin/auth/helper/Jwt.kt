@@ -73,8 +73,10 @@ class Jwt(restTemplateBuilder: RestTemplateBuilder) {
         jwtClaims.setExpirationTimeMinutesInTheFuture((this.token.expirationTime / 60_000).toFloat())
         claims.forEach { key, value -> jwtClaims.setClaim(key, value) }
 
+        val mutatedJwtClaims = this.token.plugin.instance.mutate(jwtClaims)
+
         val jws = JsonWebSignature()
-        jws.setPayload(jwtClaims.toJson())
+        jws.setPayload(mutatedJwtClaims.toJson())
         jws.setAlgorithmHeaderValue(this.token.signatureAlgorithm)
         jws.setKey(this.signingKey)
 

@@ -31,6 +31,8 @@
 | APP_TOKEN_SIGNATURE_ALGORITHM                                  | Signature Algorithm used to sign Jwt. Only support RSA algo |
 | APP_TOKEN_ENCRYPTION_JWK                                       | Json Web Key used to encrypt the content of JWT. Only support algo using AES-CBC and HMAC-SHA2 |
 | APP_TOKEN_EXPIRATION_TIME                                      | How many milliseconds will the Jwt be valid for        |
+| APP_TOKEN_PLUGIN_JAR_FILE_URL                                  | The URL of the plugin jar file                         |
+| APP_TOKEN_PLUGIN_CLASS_PATH                                    | The class path of the plugin class to be instantiated  |
 | **`Singpass`**                                                 |                                                        |
 | APP_SINGPASS_HOMEPAGE_URL                                      | Homepage of the app using svc-auth for singpass        |
 | APP_SINGPASS_SERVICE_PROVIDER_PRIVATE_KEY                      | Private key(pcks8 format) used by svc-auth to sign during artifact resolve and decrypt assertion |
