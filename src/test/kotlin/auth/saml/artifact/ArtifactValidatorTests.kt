@@ -6,6 +6,7 @@ import org.junit.Assert.fail
 import org.joda.time.DateTime
 import org.opensaml.saml.saml2.core.ArtifactResponse
 import org.opensaml.saml.saml2.core.Response
+import org.opensaml.messaging.handler.MessageHandlerException
 import org.springframework.mock.web.MockHttpServletRequest
 
 class ArtifactValidatorTests : ArtifactUnitTestBase() {
@@ -48,7 +49,7 @@ class ArtifactValidatorTests : ArtifactUnitTestBase() {
             ArtifactValidator.validateDestinationAndLifetime(artifactResponse, request)
             fail("Validation failed. Should be throwing error")
         } catch (e: Exception) {
-            assertTrue(e is RuntimeException)
+            assertTrue(e is MessageHandlerException)
         }
 
         try {
@@ -60,7 +61,7 @@ class ArtifactValidatorTests : ArtifactUnitTestBase() {
             ArtifactValidator.validateDestinationAndLifetime(artifactResponse, request)
             fail("Validation failed. Should be throwing error")
         } catch (e: Exception) {
-            assertTrue(e is RuntimeException)
+            assertTrue(e is MessageHandlerException)
         }
 
         try {
@@ -83,7 +84,7 @@ class ArtifactValidatorTests : ArtifactUnitTestBase() {
                 ArtifactValidator.validateDestinationAndLifetime(artifactResponse, request, 0, "https://destination")
                 fail("Validation failed. Should be throwing error")
         } catch (e: Exception) {
-                assertTrue(e is RuntimeException)
+                assertTrue(e is MessageHandlerException)
         }
     }
 

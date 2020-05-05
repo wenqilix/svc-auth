@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory
 
 class AdditionalInfoRequestException(message: String) : Exception(message)
 
+const val MILLISECONDS_IN_MINUTE = 60_000
+
 @Service
 class Jwt(restTemplateBuilder: RestTemplateBuilder) {
     private val logger = LoggerFactory.getLogger(Jwt::class.java)
@@ -70,7 +72,7 @@ class Jwt(restTemplateBuilder: RestTemplateBuilder) {
     private fun create(issuer: String, claims: Map<String, Any>): String {
         val jwtClaims = JwtClaims()
         jwtClaims.setIssuer(issuer)
-        jwtClaims.setExpirationTimeMinutesInTheFuture((this.token.expirationTime / 60_000).toFloat())
+        jwtClaims.setExpirationTimeMinutesInTheFuture((this.token.expirationTime / MILLISECONDS_IN_MINUTE).toFloat())
         claims.forEach { key, value -> jwtClaims.setClaim(key, value) }
 
         val mutatedJwtClaims = this.token.plugin.instance.mutate(jwtClaims)
@@ -109,7 +111,12 @@ class Jwt(restTemplateBuilder: RestTemplateBuilder) {
                     headers.setContentType(MediaType.APPLICATION_JSON)
                     val request = HttpEntity<String>(additionalInfoRequest.body, headers)
                     val respType = object : ParameterizedTypeReference<Map<String, Any>>() {}
-                    val response = this.restTemplate.exchange(additionalInfoRequest.url, HttpMethod.valueOf(additionalInfoRequest.httpMethod), request, respType)
+                    val response = this.restTemplate.exchange(
+                        additionalInfoRequest.url,
+                        HttpMethod.valueOf(additionalInfoRequest.httpMethod),
+                        request,
+                        respType
+                    )
 
                     val claimsWithAdditionalInfo = claims.plus(mapOf("additionalInfo" to response.getBody()))
 
@@ -143,7 +150,9 @@ class Jwt(restTemplateBuilder: RestTemplateBuilder) {
 
         if (this.encryptionJwk != null) {
             jwtConsumerBuilder
-                .setJweContentEncryptionAlgorithmConstraints(AlgorithmConstraints(WHITELIST, this.encryptionJwk!!.getAlgorithm()))
+                .setJweContentEncryptionAlgorithmConstraints(
+                    AlgorithmConstraints(WHITELIST, this.encryptionJwk!!.getAlgorithm())
+                )
                 .setDecryptionKey(this.encryptionJwk!!.getKey())
         }
 

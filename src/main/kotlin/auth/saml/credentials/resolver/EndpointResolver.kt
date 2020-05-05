@@ -1,7 +1,7 @@
 package auth.saml.credentials.resolver
 
 import org.opensaml.saml.metadata.resolver.impl.AbstractReloadingMetadataResolver
-import org.opensaml.saml.metadata.resolver.impl.BasicRoleDescriptorResolver
+import org.opensaml.saml.metadata.resolver.impl.PredicateRoleDescriptorResolver
 import org.opensaml.saml.saml2.metadata.impl.IndexedEndpointImpl
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet
 
@@ -10,7 +10,7 @@ import net.shibboleth.utilities.java.support.resolver.CriteriaSet
  */
 class EndpointResolver(val metadataResolver: AbstractReloadingMetadataResolver) {
     inline fun <reified T : IndexedEndpointImpl> resolve(criteria: CriteriaSet): Iterable<String> {
-        val roleResolver = BasicRoleDescriptorResolver(metadataResolver)
+        val roleResolver = PredicateRoleDescriptorResolver(metadataResolver)
         roleResolver.initialize()
 
         return roleResolver.resolveSingle(criteria)!!.endpoints

@@ -1,9 +1,9 @@
 package auth.saml.credentials.resolver
 
 import org.opensaml.saml.metadata.resolver.impl.AbstractReloadingMetadataResolver
-import org.opensaml.saml.metadata.resolver.impl.BasicRoleDescriptorResolver
+import org.opensaml.saml.metadata.resolver.impl.PredicateRoleDescriptorResolver
 import org.opensaml.saml.security.impl.MetadataCredentialResolver
-import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap
+import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet
 import org.opensaml.security.credential.Credential
 
@@ -13,7 +13,7 @@ import org.opensaml.security.credential.Credential
 class CredentialResolver(val metadataResolver: AbstractReloadingMetadataResolver) {
     fun resolve(criteria: CriteriaSet): Iterable<Credential> {
         val keyResolver = DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver()
-        val roleResolver = BasicRoleDescriptorResolver(metadataResolver)
+        val roleResolver = PredicateRoleDescriptorResolver(metadataResolver)
 
         val resolver = MetadataCredentialResolver()
         resolver.setRoleDescriptorResolver(roleResolver)

@@ -18,6 +18,8 @@ import auth.helper.Cryptography
 import auth.helper.Properties
 import auth.helper.ServiceProvider
 
+class ServiceProviderMetaDataException(message: String, exception: ResolverException) : Exception(message, exception)
+
 open class ServiceProviderMetaData(val serviceProvider: ServiceProvider) {
     val entityId: String
     val assertionConsumerService: String
@@ -44,7 +46,7 @@ open class ServiceProviderMetaData(val serviceProvider: ServiceProvider) {
             val key = Cryptography.generatePrivate(serviceProvider.privateKey)
             (credential as BasicCredential).setPrivateKey(key)
         } catch (e: ResolverException) {
-            throw RuntimeException("Something went wrong reading sp metadata/credential", e)
+            throw ServiceProviderMetaDataException("Something went wrong reading sp metadata/credential", e)
         }
     }
 }

@@ -16,6 +16,8 @@ import auth.saml.credentials.resolver.CredentialResolver
 import auth.helper.Properties
 import auth.helper.IdentityProvider
 
+class IdentityProviderMetaDataException(message: String, exception: ResolverException) : Exception(message, exception)
+
 open class IdentityProviderMetaData(val identityProvider: IdentityProvider) {
     private val _entityId: String
     val artifactResolutionService: String
@@ -39,7 +41,7 @@ open class IdentityProviderMetaData(val identityProvider: IdentityProvider) {
             criteriaSet.add(EvaluableUsageCredentialCriterion(UsageType.SIGNING))
             signingCredential = CredentialResolver(idpMetadataResolver).resolveSingle(criteriaSet)
         } catch (e: ResolverException) {
-            throw RuntimeException("Something went wrong reading idp metadata", e)
+            throw IdentityProviderMetaDataException("Something went wrong reading idp metadata", e)
         }
     }
 }

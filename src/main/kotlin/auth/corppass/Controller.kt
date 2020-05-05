@@ -27,6 +27,7 @@ import auth.corppass.model.auth.Auth
 import auth.corppass.model.auth.ThirdPartyClient
 import auth.corppass.model.mock.UserList
 
+@Suppress("StringLiteralDuplication")
 @Controller("corppassController")
 @RequestMapping("/cp")
 @Profile("qa", "development", "remote-development")

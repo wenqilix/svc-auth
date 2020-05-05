@@ -13,12 +13,6 @@
 ./gradlew test
 ```
 
-### Build Docker Image
-
-```bash
-./gradlew build docker
-```
-
 ### Environment Variables
 |                                                                |                                                        |
 |----------------------------------------------------------------|--------------------------------------------------------|
@@ -114,30 +108,18 @@ Generate public key using the private key:
   openssl rsa -pubout -in private_key.pem -out public_key.pem
 ```
 
-### Actuator
+### Operating This
 
-By default /health and /info are accessible via WEB
+#### Monitoring & Metrics
 
-Refer to https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html
+The Springboot Actuator is used to provide the `/actuator/health` and `/actuator/prometheus` endpoints for healthckeck and Prometheus metrics respectively.
 
-Install it by adding this line in build.gradle
+Configuration of both endpoints **require both enabling and exposing** and this is done via the `management.endpoint.*.enabled` and `management.endpoints.web.exposure.include` configurations in `application.yml`.
 
-```
-compile("org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version")
-```
+> For more information refer to https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html/
 
-By default all endpoints are set to false
 
-./src/main/resources/application.yml
 
-```
-management:
-    endpoints:
-        enabled-by-default: false
-    endpoint:
-        health:
-            enabled: true
-```
 
 ### Troubleshooting
 
