@@ -1,4 +1,4 @@
-# MCF Authentication with Singpass / Corppass
+# Authentication with Singpass / Corppass
 
 ### Run Locally
 
@@ -17,68 +17,110 @@
 |                                                                |                                                        |
 |----------------------------------------------------------------|--------------------------------------------------------|
 | SPRING_PROFILES_ACTIVE                                         | specify which Environment are active.                  |
-| **`Zipkin`**                                                   |                                                        |
-| APP_INSTRUMENTATION_ZIPKIN_URL                                 | The hostname to the Zipkin server. For example, if you normally access the Zipkin server API at `https://zipkin.yourdomain.com/api/v1/spans`, specify the value as `https://zipkin.yourdomain.com`. |
-| APP_INSTRUMENTATION_ZIPKIN_ENV                                 | Specifies the environment of the application. When this is specified ,it is appended to the service name for identification in the Zipkin UI. For example, if `"development"` is specified as the value, the resultant service name in Zipkin UI will be `"svc-auth-development"`. |
 | **`Jwt Token`**                                                |                                                        |
-| APP_TOKEN_PRIVATE_KEY                                          | Private key(pcks8 format) used to sign the Jwt         |
-| APP_TOKEN_SIGNATURE_ALGORITHM                                  | Signature Algorithm used to sign Jwt. Only support RSA algo |
-| APP_TOKEN_ENCRYPTION_JWK                                       | Json Web Key used to encrypt the content of JWT. Only support algo using AES-CBC and HMAC-SHA2 |
-| APP_TOKEN_EXPIRATION_TIME                                      | How many milliseconds will the Jwt be valid for        |
+| APP_TOKEN_SIGNING_JWK                                          | JSON Web Key use to sign/verify the JWT                |
+| APP_TOKEN_ENCRYPTION_JWKS_URL                                  | Remote url to get JWKS used to encrypt the content of JWT |
+| APP_TOKEN_EXPIRATION_TIME                                      | How many milliseconds will the JWT be valid for        |
+| APP_TOKEN_MAX_AGE                                              | How many milliseconds will the JWT be valid for after been issued. Default: 43200000 (12 hours) |
 | APP_TOKEN_PLUGIN_JAR_FILE_URL                                  | The URL of the plugin jar file                         |
 | APP_TOKEN_PLUGIN_CLASS_PATH                                    | The class path of the plugin class to be instantiated  |
 | **`Singpass`**                                                 |                                                        |
 | APP_SINGPASS_HOMEPAGE_URL                                      | Homepage of the app using svc-auth for singpass        |
-| APP_SINGPASS_SERVICE_PROVIDER_PRIVATE_KEY                      | Private key(pcks8 format) used by svc-auth to sign during artifact resolve and decrypt assertion |
-| APP_SINGPASS_SERVICE_PROVIDER_METADATA_PATH                    | Service provider metadata file path                    |
-| APP_SINGPASS_SERVICE_PROVIDER_METADATA_ID                      | ID to differiate between different service provider metadata |
-| APP_SINGPASS_SERVICE_PROVIDER_LOGIN_URL                        | Login url of the app using svc-auth (url that the Jwt will be posted to) |
-| APP_SINGPASS_IDENTITY_PROVIDER_HOST                            | Singpass url domain                                    |
-| APP_SINGPASS_IDENTITY_PROVIDER_SERVICE_ID                      | Service ID registered with Singpass                    |
-| APP_SINGPASS_IDENTITY_PROVIDER_METADATA_PATH                   | Identity provider metadata file path                   |
-| APP_SINGPASS_IDENTITY_PROVIDER_METADATA_ID                     | ID to differiate between different service provider metadata |
-| APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_HOST     | Whitelisted proxy host to resolve artifact with Singpass |
-| APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PORT     | Whitelisted proxy port to resolve artifact with Singpass |
-| APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_USERNAME | Whitelisted proxy username to resolve artifact with Singpass |
-| APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PASSWORD | Whitelisted proxy password to resolve artifact with Singpass |
-| APP_SINGPASS_IDENTITY_PROVIDER_ARTIFACT_LIFETIME_CLOCK_SKEW    | Allowed time different to validate resolved artifact lifetime |
+| APP_SINGPASS_SERVICE_PROVIDER_LOGIN_URL                        | Login(callback) url of the app using svc-auth |
+| APP_SINGPASS_OPEN_ID_PROVIDER_HOST                             | Singpass url domain                                    |
+| APP_SINGPASS_OPEN_ID_PROVIDER_CLIENT_ID                        | Client Id given by Singpass during onboarding          |
+| APP_SINGPASS_OPEN_ID_PROVIDER_REDIRECT_URI                     | This is the URI to which the Singpass authCode response should be sent. e.g. https://svc.auth/sp/cb |
+| APP_SINGPASS_OPEN_ID_PROVIDER_AUTHORIZE_ENDPOINT               | Endpoint to obtain an authorization code which will be later used to exchange with Singpass to get ID token |
+| APP_SINGPASS_OPEN_ID_PROVIDER_TOKEN_ENDPOINT                   | Endpoint to obtain an ID token and access token |
+| APP_SINGPASS_OPEN_ID_PROVIDER_AUTHORIZATION_INFO_ENDPOINT      | Endpoint to obtain user's authorization info |
+| APP_SINGPASS_OPEN_ID_PROVIDER_LOGOUT_ENDPOINT                  | Endpoint to logout user from NDI's provider |
+| APP_SINGPASS_OPEN_ID_PROVIDER_TOKEN_SIGNING_JWK                | JSON Web Key use to sign client assertion (used for identifying us) when exchanging access token |
+| APP_SINGPASS_OPEN_ID_PROVIDER_TOKEN_ENCRYPTION_JWK             | JSON Web Key use to decrypt Singpass JWE payload (Singpass will use the public key hosted on /sp/openid/jwks) to encrypt the payload |
+| APP_SINGPASS_OPEN_ID_PROVIDER_TOKEN_JWKS_ENDPOINT              | Singpass JSON Web Keys endpoint                        |
 | APP_SINGPASS_ADDITIONAL_INFO_REQUEST_URL                       | Url to fetch additional info into the token            |
 | APP_SINGPASS_ADDITIONAL_INFO_REQUEST_HTTP_METHOD               | Http method use to fetch the additional info url e.g GET/POST |
 | APP_SINGPASS_ADDITIONAL_INFO_REQUEST_BODY                      | Any body to be passed in for fetch additional info     |
 | APP_SINGPASS_ADDITIONAL_INFO_REQUEST_STATIC_JSON               | Static JSON payload to be added into token             |
+| APP_SINGPASS_ADDITIONAL_INFO_REQUEST_REQUEST_TIMEOUT           | How many milliseconds to wait for the request response before timeout |
 | **`Corppass`**                                                 |                                                        |
 | APP_CORPPASS_HOMEPAGE_URL                                      | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_SERVICE_PROVIDER_PRIVATE_KEY                      | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_SERVICE_PROVIDER_METADATA_PATH                    | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_SERVICE_PROVIDER_METADATA_ID                      | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_SERVICE_PROVIDER_LOGIN_URL                        | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_IDENTITY_PROVIDER_HOST                            | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_IDENTITY_PROVIDER_SERVICE_ID                      | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_IDENTITY_PROVIDER_METADATA_PATH                   | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_IDENTITY_PROVIDER_METADATA_ID                     | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_HOST     | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PORT     | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_USERNAME | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_SERVICE_PROXY_PASSWORD | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_IDENTITY_PROVIDER_ARTIFACT_LIFETIME_CLOCK_SKEW    | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_HOST                             | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_CLIENT_ID                        | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_REDIRECT_URI                     | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_AUTHORIZE_ENDPOINT               | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_TOKEN_ENDPOINT                   | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_AUTHORIZATION_INFO_ENDPOINT      | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_LOGOUT_ENDPOINT                  | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_TOKEN_SIGNING_JWK                | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_TOKEN_ENCRYPTION_JWK             | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_TOKEN_JWKS_ENDPOINT              | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_MOCK_USER_LIST_URL                                | Url to get a list of mock corppass users' info (dev, qa only) |
 | APP_CORPPASS_ADDITIONAL_INFO_REQUEST_URL                       | Url to fetch additional info into the token            |
 | APP_CORPPASS_ADDITIONAL_INFO_REQUEST_HTTP_METHOD               | Http method use to fetch the additional info url e.g GET/POST |
 | APP_CORPPASS_ADDITIONAL_INFO_REQUEST_BODY                      | Any body to be passed in for fetch additional info     |
 | APP_CORPPASS_ADDITIONAL_INFO_REQUEST_STATIC_JSON               | Static JSON payload to be added into token             |
+| APP_CORPPASS_ADDITIONAL_INFO_REQUEST_REQUEST_TIMEOUT           | How many milliseconds to wait for the request response before timeout |
 | **`Service`**                                                  |                                                        |
 | APP_SERVICE_SERVICES_FOLDER_PATH                               | Url to configuration details of service in yaml file |
 | APP_SERVICE_SIGNATURE_LIFETIME_CLOCK_SKEW                      | Allowed time different to validate `nonce` parameter in signature payload |
 
-#### Services YAML Configuaration
+
+### Authentication Flow
+```mermaid
+sequenceDiagram
+  Browser->>Svc Auth: Initial Login
+  Note over Svc Auth: GET /[sp|cp]/login
+  alt Development / QA
+    Svc Auth->>Browser: Redirect to Mock Login Page
+    Browser->>Svc Auth: Mock Login Page
+    Svc Auth->>Svc Auth: User Login
+    Svc Auth->>Browser: Redirect to Svc Auth with authCode
+  else UAT / Production
+    Svc Auth->>Browser: Redirect to SPCP
+    Browser->>SPCP: SPCP login page
+    SPCP->>SPCP: User Login
+    SPCP->>Browser: Redirect to Svc Auth with authCode
+  end
+  Browser->>Svc Auth: Svc Auth callback endpoint
+  Note over Svc Auth: GET /[sp|cp]/cb
+  Svc Auth->>Browser: Redirect to Auth Consumer callback with authCode
+  Browser->>Auth Consumer: Auth Consumer callback end point
+  Auth Consumer->>Svc Auth: Resolve authCode
+  alt UAT / Production
+    Svc Auth->>SPCP: Resolve token
+    SPCP-->>Svc Auth: token response
+  end
+  Svc Auth->>Svc Auth: Generate access token
+  Svc Auth-->>Auth Consumer: Return with access token
+  Auth Consumer->>Auth Consumer: Set access token to HttpOnly Cookie
+  Auth Consumer->>Browser: Redirect to frontend
+```
+
+### Access Token Usage
+```mermaid
+sequenceDiagram
+  Note left of UI: Retrieving data thru backend api
+  UI->>API: Request data (requires authentication)
+  API->>API: Retrieve Jwt from HttpOnly Cookie and verify
+  API-->>UI: Return requested data
+  Note left of UI: Retrieving new access token
+  UI->>API: Refresh access token
+  API->>API: Retrieve Jwt from HttpOnly Cookie and verify
+  API->>Svc Auth: Refresh access token with current access token in request headers
+  Note over Svc Auth: GET /[sp|cp]/refresh
+  Svc Auth->>Svc Auth: verify access token
+  Svc Auth-->>API: Issue new access token thru response headers
+  API->>API: Set refreshed access token to HttpOnly Cookie
+```
+
+### Services YAML Configuaration
 
 For each service that need to interface with `SVC-AUTH` for a valid JWT token, create a yaml configuration file in `resources/services` directory
 Each file should contain the guid identifier to the service, public key to decode and verify signature sent by the service and the payload to insert into the returned JWT token
 
 ```
 // Arbitrary identifier to locate yaml configuration file of requesting service
-// The guid can be generated either by the hash of the service name or a timestamp
-// The filename of the yaml file follow the value of the guid `${guid}.yaml`
 guid: ...
 // public rsa key to verify signature sent by requesting service
 public-key: ...
@@ -117,17 +159,3 @@ The Springboot Actuator is used to provide the `/actuator/health` and `/actuator
 Configuration of both endpoints **require both enabling and exposing** and this is done via the `management.endpoint.*.enabled` and `management.endpoints.web.exposure.include` configurations in `application.yml`.
 
 > For more information refer to https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html/
-
-
-
-
-### Troubleshooting
-
-**Invalid Metadata or Private Key**
-
-```
-Remember the metadata/and private key body shouldn't contain "\n" or other special characters.
-(This issue is applicable to Nectar)
-
-echo -n "<?xml>..." > /sp_singpass.xml
-```

@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
-    <script type="text/javascript" src="../javascript/nricGenerator.js"></script>
+    <script type="text/javascript" src="../../javascript/nricGenerator.js"></script>
 </head>
 
 <body>
@@ -21,8 +21,8 @@
 
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <form th:object="${user}" method="GET" role="form" th:action="@{/sp/cb}">
-                    <input type="hidden" name="RelayState" id="RelayState" th:value="${target}" />
+                <form th:object="${user}" method="POST" role="form" th:action="@{submit}">
+                    <input type="hidden" name="state" id="state" th:value="${state}" />
                     <legend>Login</legend>
 
                     <div class="form-group">

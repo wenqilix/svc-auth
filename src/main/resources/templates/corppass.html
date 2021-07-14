@@ -41,8 +41,8 @@
 
     <div class="row">
         <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-            <form th:object="${userInfo}" method="POST" role="form" th:action="@{/cp/cb}">
-                <input type="hidden" name="RelayState" id="RelayState" th:value="${target}" />
+            <form th:object="${userInfo}" method="POST" role="form" th:action="@{submit}">
+                <input type="hidden" name="state" id="state" th:value="${state}" />
                 <input type="hidden" name="authAccessState" th:value="${authAccess.toJson()}" />
                 <input type="hidden" name="thirdPartyAuthAccessState" th:value="${thirdPartyAuthAccess.toJson()}" />
                 <button type="submit" class="btn btn-primary sticky-top float-right">Log In</button>
@@ -118,8 +118,8 @@
                 </div>
             </form>
 
-            <form th:object="${auth}" method="POST" role="form" th:action="@{/cp/role}">
-                <input type="hidden" name="target" th:value="${target}" />
+            <form th:object="${auth}" method="POST" role="form" th:action="@{role}">
+                <input type="hidden" name="state" th:value="${state}" />
                 <input type="hidden" name="userInfoState" th:value="${userInfo.toJson()}" />
                 <input type="hidden" name="authAccessState" th:value="${authAccess.toJson()}" />
                 <input type="hidden" name="thirdPartyAuthAccessState" th:value="${thirdPartyAuthAccess.toJson()}" />
@@ -221,8 +221,8 @@
             </form>
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <form th:object="${userList}" method="POST" role="form" th:action="@{/cp/userInfo}">
-                <input type="hidden" name="target" th:value="${target}" />
+            <form th:object="${userList}" method="POST" role="form" th:action="@{userInfo}">
+                <input type="hidden" name="state" th:value="${state}" />
                 <input type="hidden" name="authAccessState" th:value="${authAccess.toJson()}" />
                 <input type="hidden" name="thirdPartyAuthAccessState" th:value="${thirdPartyAuthAccess.toJson()}" />
                 <input type="hidden" name="userListState" th:value="${userList.toJson()}" />

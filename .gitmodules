@@ -1,3 +1,0 @@
-[submodule ".gitlab/versioning"]
-	path = .gitlab/versioning
-	url = https://github.com/zephinzer/version-tagging-scripts.git

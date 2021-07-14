@@ -30,6 +30,9 @@ complexity:
     ignoreSingleWhenExpression: true
   MethodOverloading:
     active: true
+  LongMethod:
+    active: true
+    excludes: "**/*Tests.kt"
 
 exceptions:
   NotImplementedDeclaration:

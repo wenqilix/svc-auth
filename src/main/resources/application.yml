@@ -11,10 +11,7 @@ server:
     port: 8000
 app:
     token:
-        signature-algorithm: RS512
         expiration-time: 1800_000
-        private-key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDBZ1duiBouc4Wm5tFawSy1FYum7ZQEjGvN9P1M8F/aIWVPDHWOXZld/VsqyskJ7tq3i6TiP8F83CuNZvulxq01sXoNGD+yTIF3KKqiDPKNcuZkLa5MNUpZD01h7GtzLIpEKpoBbxYVkbYtSS8j3ouRW/oqM2xciu9Hm6kU1tWXPKcgqiR9VEpIeBx9OoxcxsZaJFTji0Tf2hT7FXCALRqjHyGxHewREfd1gm1tJB4/1GRTJNktZehSvBTVMgSEZEdBeCSYWVqcCQYcpwWaBE65ybg+tYKR62hOM732fmSinQEt7fRGXeQO4Y1Y8B8aGt3udty6otTbg6t/qPcRX3CFAgMBAAECggEAFEGOlrUKiPLwfJqQMsEovY6UIdegORm78MZIAVbrsxzsT2supMqI1Z9DfSfgBnpNzguCKXAkA7/Lj/PJR4OXgJgmAFkZ0sLQjHpl5LMWdFokZzmhl7m9H7bKlAb++gEgOiN8HcpUtc2dFwEjPs6AL6lCekkIgGjMxuM2wkf99ujkvAdXdJ8V93wwNbSiFlnuBTxbP5DMKD3J96qX7rpCaMfh6BQAEIP7ihshYEnSQXSFMxDNwiBHi+0HUQy1Ypv9VavBhUFFcZ5mBXtSzSo6Bz2TqaVwTIEmiuPXliOi2YMmOpNrVzjB7PT8A3KzsCVzemeqVUtwGICEAWG6+u+8AQKBgQDezmU73uN8zI8hVu1vNn94/6uiDIo9AtaBhR1dZkGT/7cz+huwCF//LmHQ7mflCvqoBJvc2wWsh9MLQbR8v5q2jQY8M908GVW9pdLIJQFpouR1WWT8Lq+XED2UlYAORxMEP8Z1ZlzJoHNhj5LaYJ65O90JmHqE8D+vHK/fcYCj8QKBgQDeN4/3sBlIw3AnPMvtmQAgoRibH1tMJqNrRqggeoJ1ODTOr6CpqkKG+BwBg7AxoAKphmeJo5rzIdz7U31KVIyzQO+NDdqZ7V90elv8sWR9zJ3Xz34aTks4B0Vva+m2idxY6Z4GiLpY4CY6Y/eOnRjzLIQqXs8yiC86+SL/4RyZ1QKBgCypcM+EiVNN6e8D7spZQUou7eeo3dkHBZqm5VEAm2qgWsf3fa9Wrm+Hi6IG+BqIjeA6NEgcO1HvVBWwkQ5klg27zSEqQFG4vmAqqkrmaBcVyPfg+IY4kYgVgFKVeTrjcmNqqUyFPVpJaHeJASX3MjntTwyKXRziz9E5TePba67xAoGAKUE5eit4Vjjqbm5sEb1Q973QuqPUqEuYFUd12SnFZIu9yg1zD2yrkzEmyeUv5damB+ELAdOc5byIsSQr44vU30aT8qT6y471JMO+pigs1uoQ98rux2V3s3wuGOR47Eml3d/pVZ82sV9T2Y1LnW9u/V5rXw5g+ymrUxCDveuGCs0CgYEAs3lKxDImcQG05aWJsW86YOU9GfSNdANtlLyEK6GKwhWakgFNNPudWr9gbZW5FQ5ietV+eJpRvcKDr3TYzhuZh923/MZe0Eia4PHce7Sumbbvr+o4dJo6Pfvw8nxtIFnLkDbA5Jsa/qqMUuF+38GKj+TY1IxcR7zVbr+Z0VhYOmE=
-        public-key-path: src/main/resources/certs/public.pem
     singpass:
         identity-provider:
             artifact-lifetime-clock-skew: 60_000
@@ -38,9 +35,8 @@ management:
 spring:
     profiles: development
 app:
-    instrumentation:
-        zipkin:
-            env: dev
+    token:
+        signing-jwk: '{"kty":"RSA","alg":"RS512","use":"sig","n":"1Zhf5RMKNmAKm89kDZNK3ywNGqA2iujYJX9WqN7Vk-XJKzQTaXmLubTYjkPMRMUyY8I_1Zm1l8gxTjE3ArdrTF1Lx-JanGMS-zOFaFOH8ox_u6cWYR4RMFV_62KaI2IAnIcs6xqeffx2VO_X2X-geRQv-ut0GeDNNo2OKlGhkslfVUBEi4t-GrcCmjKh0wkr9j1pdOVxTYM_TCj1t8ALPr3IvaJhIlY-nd_9yszrQrzUbVGfNjFJanwIHQzoHkMajNTS_FQPJEaNdtb1mWIwokVXB0AY44QajCqcv5MWBJ_QV9yPv6cflMnCO3Fywa76AU4NZGOyCyLRH4ZQdeS-QQ","e":"AQAB","d":"FWwj6gi_1HZLehcR1N65-qojYlFBRytVSmV8HpHC4AOC6qddbw22uthtg88-9ILGrAS2fEjfUqrMbyg2eTpGM7GDwTdtmRPCupkPP0hpcSUwRnTapMDsPmnE26nXBcd1gj14ftf7n20rvRcVEgZf5OTmbwcgbNwEGP2XjZ0EVIFY-lDW8LdW_Q3IRcglhkrECGWoCEa13WbMWrn3j7VA8wak-tvIU50YUKuS0mKN3kss2lV5reKrdoRo84JMOPRJfbmoT3xkfxlCi4TEGLi5e-ZcRv6U9x5taYOEEUYDkt61jAAGlIf-VPf_5GSd16n7ZotOcp7DxIXkuz6Q4zHaNQ","p":"7Q5haG5yUXaKmDGSEU0_tSgDQ6tt27Y8FCRhSXmFmjxizLvOhX-iLehH8wTeRgoNOV8R7q1sSWwBP-BNKT1WvlruipA8MTckl2KrgD4IAMjn2TFVKiDCL99wait8YY-ItzymV8vO8f8cIMO910huyrJLDf7aLY2mvOZYTEUMFK8","q":"5qoJiTZdOgYYgDxx2tsR7qPJauvALStKXysd7f-ltyRpPSVvQAaqGPmtj4u6_dUOq4yonOQMVnMXrqbyxuRUrq9DyzONrtHrBUbd7fUVed0IRKW04CDWsZ6NqITRdnU8KNovxQlcIvQcwKYlUvFo4dJ4TpRD-06RBc65twG6-A8","dp":"wXHCu12lnCSH5LpO4B-RpVsJjucNtwV28Vjeqv6nr70nQrrfRMFqrtumGwIWAEGjmPWjxIlwnFmui1mWndiYOK4ripc5B1BgY8j4-qWkEj_gMrS3MrGYxUgoi_sAfPyMLDsp4utF7OSpJ3OUL2HER1RHOxyFHjdBoVS3KUYPHbE","dq":"GPfS7G1cDgnW4Rqp4FzSRhioltBKDxmehUqvhLGliHuCgMHqlu2hv-5W4TDo3s0PN3aUUddFlp4CtD8SDIFuwTHrjrVX4tKKNBoFr9pVpslMOdIOECy90KAvCUzHN6FdD7b-cL-gn4_5BMl3RNEo3zjfGPJnoW5RuGU2KR8g0_U","qi":"aeI55lLf9x33TawLOqtFs-RYIWRc2Pf-JZdJOMPlDUYJJ4khnFt4pYVCadpy0GRo0QoDm6Qv5M_XtOOzagWmzSDxeEEceL1VHBN1gYHvjNmoyiAhm7nKJC0-lZ1-_Vv5AK3nxGTnAuy_LN77VjyjrovOwzHr5pGXeWZhIF134BU"}'
     singpass:
         homepage-url: http://localhost:3000/
         service-provider:
@@ -51,34 +47,3 @@ app:
         homepage-url: http://localhost:3001/
         service-provider:
             login-url: http://localhost:4000/login
-
----
-
-spring:
-    profiles: production
-app:
-    instrumentation:
-        zipkin:
-            env: prod
-    singpass:
-        homepage-url: https://www.mysite.sg/
-        service-provider:
-            login-url: https://api.mysite.sg/login
-            metadata-path: /app/shared/metadata/sp_singpass.xml
-            metadata-id: SpSingpass
-        identity-provider:
-            host: saml.singpass.gov.sg
-            service-id: SERVICE-ID-SP-2FA
-            metadata-path: /app/shared/metadata/idp_singpass.xml
-            metadata-id: IdpSingpass
-    corppass:
-        homepage-url: https://corp.mysite.sg/
-        service-provider:
-            login-url: https://api.mysite.sg/login
-            metadata-path: /app/shared/metadata/sp_corppass.xml
-            metadata-id: SpCorppass
-        identity-provider:
-            host: saml.corppass.gov.sg
-            service-id: SERVICE-ID-CP-2FA
-            metadata-path: /app/shared/metadata/idp_corppass.xml
-            metadata-id: IdpCorppass
