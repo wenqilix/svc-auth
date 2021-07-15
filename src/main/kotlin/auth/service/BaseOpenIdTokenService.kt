@@ -63,13 +63,21 @@ abstract class BaseOpenIdTokenService<T> {
     internal val tokenParser: TokenParser
         get() {
             val tokenParser = TokenParser()
+            this.openIdProvider?.let {
+                val issuer = UriComponentsBuilder.newInstance()
+                    .scheme("https")
+                    .host(it.host)
+                    .build()
+                    .encode()
+                    .toUriString()
+
+                tokenParser.setIssuer(issuer).setAudience(it.clientId)
+            }
             this.httpsJwks?.let {
                 tokenParser.setVerificationHttpsJwks(it)
             }
             this.encryptionJwk?.let {
-                tokenParser
-                    .setDecryptionKey(it.privateKey)
-                    .setDecryptionAlgorithm(it.algorithm)
+                tokenParser.setDecryptionKey(it.privateKey)
             }
             return tokenParser
         }

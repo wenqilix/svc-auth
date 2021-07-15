@@ -33,15 +33,13 @@ class TokenParser {
         return this
     }
 
-    fun setDecryptionAlgorithm(value: String): TokenParser {
-        jwtConsumerBuilder.setJweContentEncryptionAlgorithmConstraints(
-            AlgorithmConstraints(PERMIT, value)
-        )
+    fun setIssuer(value: String): TokenParser {
+        jwtConsumerBuilder.setExpectedIssuer(value)
         return this
     }
 
-    fun setIssuer(value: String): TokenParser {
-        jwtConsumerBuilder.setExpectedIssuer(value)
+    fun setAudience(vararg values: String): TokenParser {
+        jwtConsumerBuilder.setExpectedAudience(*values)
         return this
     }
 

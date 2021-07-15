@@ -155,7 +155,6 @@ class OpenIdTokenServiceTests {
         val tokenResponseWithoutAuthorizationInfo = TokenResponse(
             accessToken = tokenResponse.accessToken,
             refreshToken = tokenResponse.refreshToken,
-            scope = tokenResponse.scope,
             idToken = tokenResponse.idToken,
             tokenType = tokenResponse.tokenType,
             expiresIn = tokenResponse.expiresIn,

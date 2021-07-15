@@ -3,6 +3,7 @@ package auth.service.singpass
 import auth.model.openid.TokenResponse
 import auth.util.helper.Properties
 import auth.util.jwt.TokenParser
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -15,39 +16,17 @@ import org.junit.jupiter.api.TestInstance.Lifecycle
 
 @TestInstance(Lifecycle.PER_CLASS)
 class OpenIdTokenServiceTests {
-    val tokenResponse = TokenResponse(
-        accessToken = "sQRKiEhTdc8hch5cGHbgTb8DGx9G8D",
-        refreshToken = "UATDhPb4QGpyjyO3qieMrHEiiHTCIiOm0jAudIQx",
-        scope = "openid",
-        idToken = """
-            eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2l
-            kIjoidGQzRVRGZXZuWUxGVENDeks0cklIbmVqR3RWZldyZ3U3UUpLU2ZyYWdmNCIsImN0eSI6I
-            kpXVCJ9.eiElCMM1XIge9bopN_-
-            M6ZykUPIhhEuFmkp__ViJ680cNz2hLzoqFU0z88gY6NzyBDhzP8XCiqylOCI45roXPOJgpx244aOF
-            -sn0juQb3nGaAL6wL2eWTYEDrWDDiMcxdsSCT--
-            PwzvDf6N6F3CJNgKhgPDv0WEzHiz0FWrI7AiQM5-
-            3DMsaFx8H3zbUf9QTzjAL_1oApdCuNDksDZEzIpXQZhdIgoL1dAwkyuPMRhKU_sO8a4f5wLh3fp
-            MmHPm5s7WtBbkfggBze6ZXeDi5_zyDvjRZhCMza_QfHrzneQpNgySs6v1ZPyHt0ONi8GAh0l3hzg
-            YxKxjvxyaylW5JtQ.8eY1wqvYBXIJYxrLrpxnZw.oBi27sBL_R-
-            otVr46g29uuWUBCDd9sVa0vfjKjVh9uHyMGNN0vOku1yV4BH7tRm-ClGFFrl_g-
-            H3S0R14gQgXcv6gLubceupBmE6mPWaQwyAlW3yFzvJ_FQRx9y26brrkZIx8ehMx-6UwIeF-
-            bIznLkCqBEyp5eE47VmN817PkvCoN4NckUmlSljTSejKNB8I_Y4l6FiEkb02XBHxbhdFRnMwRUN
-            W8Uiadny8qXT4kRHTkCqwxpCm0bGwOIXQr-
-            0x203Rp4Dzu1Aw9VSdmuyAbwLvp503GwdBo1Pe0ABi2RA8clPxroKYxfoz0VYRgnlJRvn-
-            z62uEXsEfBaZ7AdOGC9mravC7EogDqobEjvSbT8TFDPkYB4EmV061ZfUe8pnr13ID0t2NuELETA
-            ejXfCMiYTg0hB9HB7dlk-zh5d19Dqcxo4if_MaYKrtLeVh-CJCgU24VBZGpdQNuG0ZodmrFNJsIoi-
-            f7ragobCxv2S4Y-fbCCSuHQWbwpgQcBXSAFwhwPDoX0u-1Fh8nJlr2-
-            uo3EoLae36Zmyl7F8ndLIzx1iHg3J2tfOYFExeByquNRGfqto6L6kRzzjnBl-
-            NOzwCx51dD6IIKZmrHbZNbWgdPcuqeoc4gL1ciCjwm4gQk-bdwg0JkInKOULO6gf47gPjkz6owlBHoH9P_Qp4p6Frh5zW87hpzPC7RMUAvwFrWn74VYqQK1Gh
-            UiktlYG8ys-
-            ek5GNsbxD7n2urmN6NfQOJ8SZ83ewoTHcRC1gN9F8w9QeOoqsCUt76Aupze5c614tudIAHUJL1i
-            00oMevNWWm9pb3OlVGENtUrMf5HYPHuIn6C57BuXVtEkiWZA6SQ-
-            KgJ29NKhUY3nItpvzKrhWpn1tysFtPP_oNIKIcgBqXltDSjLzJ8BNfhZdMrRJwosZm4t4I9v98Yvj35n
-            WFA-gxGl8uqt-MZ4D3-on4P0lSRjknqeNClx4qb6ilEniR3i8BW7ktvBbpN8ueicS47_H0.-E6iFnM-
-            mX7W2VeDmO1WDXSM2Wvi_PqwRmU50ATgAKk
-        """,
-        tokenType = "bearer",
-        expiresIn = 600
+    val tokenResponsePayload = """
+        {
+            "access_token": "sQRKiEhTdc8hch5cGHbgTb8DGx9G8D",
+            "id_token": "eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoidGQzRVRGZXZuWUxGVENDeks0cklIbmVqR3RWZldyZ3U3UUpLU2ZyYWdmNCIsImN0eSI6IkpXVCJ9.eiElCMM1XIge9bopN_-M6ZykUPIhhEuFmkp__ViJ680cNz2hLzoqFU0z88gY6NzyBDhzP8XCiqylOCI45roXPOJgpx244aOF-sn0juQb3nGaAL6wL2eWTYEDrWDDiMcxdsSCT--PwzvDf6N6F3CJNgKhgPDv0WEzHiz0FWrI7AiQM5-3DMsaFx8H3zbUf9QTzjAL_1oApdCuNDksDZEzIpXQZhdIgoL1dAwkyuPMRhKU_sO8a4f5wLh3fpMmHPm5s7WtBbkfggBze6ZXeDi5_zyDvjRZhCMza_QfHrzneQpNgySs6v1ZPyHt0ONi8GAh0l3hzgYxKxjvxyaylW5JtQ.8eY1wqvYBXIJYxrLrpxnZw.oBi27sBL_R-otVr46g29uuWUBCDd9sVa0vfjKjVh9uHyMGNN0vOku1yV4BH7tRm-ClGFFrl_g-H3S0R14gQgXcv6gLubceupBmE6mPWaQwyAlW3yFzvJ_FQRx9y26brrkZIx8ehMx-6UwIeF-bIznLkCqBEyp5eE47VmN817PkvCoN4NckUmlSljTSejKNB8I_Y4l6FiEkb02XBHxbhdFRnMwRUNW8Uiadny8qXT4kRHTkCqwxpCm0bGwOIXQr-0x203Rp4Dzu1Aw9VSdmuyAbwLvp503GwdBo1Pe0ABi2RA8clPxroKYxfoz0VYRgnlJRvn-z62uEXsEfBaZ7AdOGC9mravC7EogDqobEjvSbT8TFDPkYB4EmV061ZfUe8pnr13ID0t2NuELETAejXfCMiYTg0hB9HB7dlk-zh5d19Dqcxo4if_MaYKrtLeVh-CJCgU24VBZGpdQNuG0ZodmrFNJsIoi-f7ragobCxv2S4Y-fbCCSuHQWbwpgQcBXSAFwhwPDoX0u-1Fh8nJlr2-uo3EoLae36Zmyl7F8ndLIzx1iHg3J2tfOYFExeByquNRGfqto6L6kRzzjnBl-NOzwCx51dD6IIKZmrHbZNbWgdPcuqeoc4gL1ciCjwm4gQk-bdwg0JkInKOULO6gf47gPjkz6owlBHoH9P_Qp4p6Frh5zW87hpzPC7RMUAvwFrWn74VYqQK1GhUiktlYG8ys-ek5GNsbxD7n2urmN6NfQOJ8SZ83ewoTHcRC1gN9F8w9QeOoqsCUt76Aupze5c614tudIAHUJL1i00oMevNWWm9pb3OlVGENtUrMf5HYPHuIn6C57BuXVtEkiWZA6SQ-KgJ29NKhUY3nItpvzKrhWpn1tysFtPP_oNIKIcgBqXltDSjLzJ8BNfhZdMrRJwosZm4t4I9v98Yvj35nWFA-gxGl8uqt-MZ4D3-on4P0lSRjknqeNClx4qb6ilEniR3i8BW7ktvBbpN8ueicS47_H0.-E6iFnM-mX7W2VeDmO1WDXSM2Wvi_PqwRmU50ATgAKk",
+            "token_type": "bearer",
+            "expires_in": 600
+        }"""
+    val mapper = ObjectMapper()
+    val tokenResponse = mapper.convertValue(
+        mapper.readValue(tokenResponsePayload, Map::class.java),
+        TokenResponse::class.java
     )
 
     @MockK
@@ -87,6 +66,5 @@ class OpenIdTokenServiceTests {
         val user = openIdTokenService.parse(tokenResponse)
 
         assertEquals("S9000000E", user.userName)
-        assertEquals(tokenResponse.refreshToken, user.refreshToken)
     }
 }

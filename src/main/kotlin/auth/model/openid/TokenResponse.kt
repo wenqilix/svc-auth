@@ -1,7 +1,9 @@
 package auth.model.openid
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonSetter
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class TokenResponse(
     @JsonSetter("access_token")
     val accessToken: String,
@@ -13,8 +15,6 @@ data class TokenResponse(
     val tokenType: String,
     @JsonSetter("expires_in")
     val expiresIn: Int,
-    @JsonSetter("scope")
-    val scope: String,
     @JsonSetter("authorization_info_token")
     var authorizationInfoToken: String? = null
 )
