@@ -3,29 +3,15 @@ package auth.util.helper
 import auth.plugin.ClaimsMutator
 import auth.plugin.DefaultClaimsMutator
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.context.ApplicationContext
-import org.springframework.context.ApplicationContextAware
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ConfigurationProperties(prefix = "app")
-class Properties : ApplicationContextAware {
+class Properties {
     var token: Token = Token()
     var singpass: Provider = Provider()
     var corppass: Provider = Provider()
     var service: Services = Services()
-
-    companion object {
-        private lateinit var applicationContext: ApplicationContext
-
-        fun getPropertiesContext(): Properties {
-            return applicationContext.getBeansOfType(Properties::class.java).values.iterator().next()
-        }
-    }
-
-    override fun setApplicationContext(context: ApplicationContext) {
-        applicationContext = context
-    }
 }
 
 class Services {
