@@ -33,7 +33,6 @@
 | APP_SINGPASS_OPEN_ID_PROVIDER_AUTHORIZE_ENDPOINT               | Endpoint to obtain an authorization code which will be later used to exchange with Singpass to get ID token |
 | APP_SINGPASS_OPEN_ID_PROVIDER_TOKEN_ENDPOINT                   | Endpoint to obtain an ID token and access token |
 | APP_SINGPASS_OPEN_ID_PROVIDER_AUTHORIZATION_INFO_ENDPOINT      | Endpoint to obtain user's authorization info |
-| APP_SINGPASS_OPEN_ID_PROVIDER_LOGOUT_ENDPOINT                  | Endpoint to logout user from NDI's provider |
 | APP_SINGPASS_OPEN_ID_PROVIDER_TOKEN_SIGNING_JWK                | JSON Web Key use to sign client assertion (used for identifying us) when exchanging access token |
 | APP_SINGPASS_OPEN_ID_PROVIDER_TOKEN_ENCRYPTION_JWK             | JSON Web Key use to decrypt Singpass JWE payload (Singpass will use the public key hosted on /sp/openid/jwks) to encrypt the payload |
 | APP_SINGPASS_OPEN_ID_PROVIDER_TOKEN_JWKS_ENDPOINT              | Singpass JSON Web Keys endpoint                        |
@@ -51,7 +50,6 @@
 | APP_CORPPASS_OPEN_ID_PROVIDER_AUTHORIZE_ENDPOINT               | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_TOKEN_ENDPOINT                   | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_AUTHORIZATION_INFO_ENDPOINT      | Same as Singpass but for Corppass                      |
-| APP_CORPPASS_OPEN_ID_PROVIDER_LOGOUT_ENDPOINT                  | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_TOKEN_SIGNING_JWK                | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_TOKEN_ENCRYPTION_JWK             | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_TOKEN_JWKS_ENDPOINT              | Same as Singpass but for Corppass                      |

@@ -61,7 +61,6 @@ class OpenIdProvider {
     var authorizeEndpoint: String = "/authorize"
     var tokenEndpoint: String = "/token"
     var authorizationInfoEndpoint: String? = null
-    var logoutEndpoint: String? = null
     var clientAssertionJwtExpirationTime: Long = 2 * 60 * 1000
 }
 

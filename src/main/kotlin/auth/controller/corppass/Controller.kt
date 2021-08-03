@@ -1,7 +1,6 @@
 package auth.controller.corppass
 
 import auth.service.corppass.LoginService
-import auth.service.corppass.LogoutService
 import auth.util.helper.Properties
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -17,8 +16,6 @@ import java.util.Base64
 class Controller {
     @Autowired
     lateinit var loginService: LoginService
-    @Autowired
-    lateinit var logoutService: LogoutService
     @Autowired
     lateinit var properties: Properties
 
@@ -40,11 +37,5 @@ class Controller {
         val identityConsumerCallbackDestination =
             loginService.getIdentityConsumerCallbackDestination(code, stateContent.getValue("target"))
         return "redirect:$identityConsumerCallbackDestination"
-    }
-
-    @GetMapping("/logout")
-    fun logout(@RequestParam(value = "returnUrl") returnUrl: String): String {
-        val logoutDestination = logoutService.getLogoutDestination(returnUrl)
-        return "redirect:$logoutDestination"
     }
 }
