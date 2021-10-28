@@ -18,38 +18,36 @@ class TokenAuthorizationClaimTests {
 
     @Test
     fun `openid authorization json with AuthInfo map to TokenAuthorizationClaim`() {
-        val jsonWithAuthInfo = json.dropLast(1) + """
-                ,
-                "AuthInfo": {
-                    "Result_Set": {
-                        "ESrvc_Row_Count": 1,
-                        "ESrvc_Result": [
-                            {
-                                "CPESrvcID": "JG016",
-                                "Auth_Result_Set": {
-                                    "Row_Count": 1,
-                                    "Row": [
-                                        {
-                                            "CPEntID_SUB": "",
-                                            "CPRole": "Role12345",
-                                            "StartDate": "2019-04-15",
-                                            "EndDate": "9999-12-31",
-                                            "Parameter": [
-                                                {
-                                                    "name": "NONMANDATORYFT",
-                                                    "value": ""
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
+        val resultSet = """
+            {
+                "Result_Set": {
+                    "ESrvc_Row_Count": 1,
+                    "ESrvc_Result": [
+                        {
+                            "CPESrvcID": "JG016",
+                            "Auth_Result_Set": {
+                                "Row_Count": 1,
+                                "Row": [
+                                    {
+                                        "CPEntID_SUB": "",
+                                        "CPRole": "Role12345",
+                                        "StartDate": "2019-04-15",
+                                        "EndDate": "9999-12-31",
+                                        "Parameter": [
+                                            {
+                                                "name": "NONMANDATORYFT",
+                                                "value": ""
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
-                        ]
-                    }
+                        }
+                    ]
                 }
             }"""
         val mapper = ObjectMapper()
-        val jsonMap = mapper.readValue(jsonWithAuthInfo, Map::class.java)
+        val jsonMap = mapper.readValue(json, Map::class.java).plus("AuthInfo" to resultSet)
         val tokenAuthorizationClaim = mapper.convertValue(jsonMap, TokenAuthorizationClaim::class.java)
 
         val parameters = mutableListOf(
@@ -63,9 +61,8 @@ class TokenAuthorizationClaimTests {
 
     @Test
     fun `openid authorization json with TPAuthInfo map to TokenAuthorizationClaim`() {
-        val jsonWithAuthInfo = json.dropLast(1) + """
-                ,
-                "TPAuthInfo": {
+        val resultSet = """
+            {
                     "Result_Set": {
                         "ESrvc_Row_Count": 1,
                         "ESrvc_Result": [
@@ -97,7 +94,7 @@ class TokenAuthorizationClaimTests {
                 }
             }"""
         val mapper = ObjectMapper()
-        val jsonMap = mapper.readValue(jsonWithAuthInfo, Map::class.java)
+        val jsonMap = mapper.readValue(json, Map::class.java).plus("TPAuthInfo" to resultSet)
         val tokenAuthorizationClaim = mapper.convertValue(jsonMap, TokenAuthorizationClaim::class.java)
 
         assertEquals(1, tokenAuthorizationClaim.thirdPartyAuthAccess.clients.count())

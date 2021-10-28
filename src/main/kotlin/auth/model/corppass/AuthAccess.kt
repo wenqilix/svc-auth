@@ -19,6 +19,10 @@ data class AuthAccess(
             Auth(auth)
         }.toMutableList()
     )
+    constructor(json: String) : this() {
+        val mapper = ObjectMapper()
+        auths = mapper.readValue(json, this::class.java).auths
+    }
 
     fun toMap(): Map<String, Any> {
         return mapOf(

@@ -1,7 +1,7 @@
 buildscript {
-    ext.kotlin_version = '1.4.21'
-    ext.spring_boot_version = '2.5.2'
-    ext.detekt_version = '1.17.1'
+    ext.kotlin_version = '1.5.31'
+    ext.spring_boot_version = '2.5.5'
+    ext.detekt_version = '1.18.1'
     repositories {
         mavenCentral()
         maven {
@@ -58,10 +58,14 @@ task ktlintFix(type: JavaExec, group: "formatting") {
 
 repositories {
     mavenCentral()
-    jcenter()
     maven { url "https://build.shibboleth.net/nexus/content/repositories/releases" }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_15
+  }
+}
 sourceCompatibility = JavaVersion.VERSION_15
 targetCompatibility = JavaVersion.VERSION_15
 
@@ -71,15 +75,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:$spring_boot_version")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf:$spring_boot_version")
     implementation("org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.7.1")
-    implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3')
-    implementation('org.bitbucket.b_c:jose4j:0.7.8')
+    implementation("io.micrometer:micrometer-registry-prometheus:1.7.5")
+    implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4')
+    implementation('org.bitbucket.b_c:jose4j:0.7.9')
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:$spring_boot_version")
-    testImplementation('io.mockk:mockk:1.10.4')
+    testImplementation('io.mockk:mockk:1.12.0')
     testImplementation('com.ninja-squad:springmockk:3.0.1')
 
-    ktlint("com.pinterest:ktlint:0.41.0")
+    ktlint("com.pinterest:ktlint:0.42.1")
 }
 test {
     useJUnitPlatform()

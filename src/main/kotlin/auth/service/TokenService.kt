@@ -59,8 +59,7 @@ open class TokenService {
     fun build(issuer: String, payload: Map<String, Any>): String {
         val tokenBuilder = TokenBuilder(properties.token.plugin)
             .setIssuer(issuer)
-            .setSigningKey(this.signingJwk.privateKey)
-            .setSigningAlgorithm(this.signingJwk.algorithm)
+            .setSigningJwk(this.signingJwk)
             .setExpiration(properties.token.expirationTime)
         this.encryptionHttpsJwks?.let { httpsJwks ->
             val encryptionJwk = httpsJwks.getJsonWebKeys().find {
@@ -69,8 +68,7 @@ open class TokenService {
             encryptionJwk?.let {
                 tokenBuilder
                     .setEncryptionMethod(ContentEncryptionAlgorithmIdentifiers.AES_256_CBC_HMAC_SHA_512)
-                    .setEncryptionAlgorithm(it.algorithm)
-                    .setEncryptionKey(it.key)
+                    .setEncryptionJwk(it)
             }
         }
         return tokenBuilder.build(payload)

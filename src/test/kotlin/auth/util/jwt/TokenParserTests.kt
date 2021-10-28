@@ -33,7 +33,7 @@ class TokenParserTests {
 
     @Test
     fun `parse failed when issuedAt exceed maxAge`() {
-        val maxAge: Long = 60 * 1000
+        val maxAge: Long = 60 * 1000L
         val issuedAtExceedMaxAge = (System.currentTimeMillis() - (maxAge * 2)) / 1000
         val mockClaimWithExistingIssuedAt = mockClaims.plus(mapOf("iat" to issuedAtExceedMaxAge))
         val jwtClaims = JwtClaims()

@@ -8,14 +8,26 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.InetSocketAddress
+import java.net.Proxy
 
 object TokenResolver {
     private val logger = LoggerFactory.getLogger(TokenResolver::class.java)
-    private val restTemplate = RestTemplate()
+    private fun getRestTemplate(openIdProvider: OpenIdProvider): RestTemplate {
+        val requestFactory = openIdProvider.proxyHost?.let {
+            val proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress(it, openIdProvider.proxyPort))
+            SimpleClientHttpRequestFactory().let {
+                it.setProxy(proxy)
+                it
+            }
+        }
+        return if (requestFactory != null) RestTemplate(requestFactory) else RestTemplate()
+    }
 
     private fun generateClientAssertion(openIdProvider: OpenIdProvider): String {
         val audience = UriComponentsBuilder.newInstance()
@@ -28,8 +40,8 @@ object TokenResolver {
         val tokenBuilder = TokenBuilder(null)
             .setIssuer(openIdProvider.clientId)
             .setSubject(openIdProvider.clientId)
-            .setSigningKey(signingJwk.privateKey)
-            .setSigningAlgorithm(signingJwk.algorithm)
+            .setSigningJwk(signingJwk)
+            .setSigningHeader("typ", "JWT")
             .setExpiration(openIdProvider.clientAssertionJwtExpirationTime)
             .setAudience(audience)
 
@@ -49,7 +61,7 @@ object TokenResolver {
                 val httpHeaders = HttpHeaders().also { it.setBearerAuth(accessToken) }
                 val authorizationInfoRequest = HttpEntity(null, httpHeaders)
 
-                restTemplate.postForObject(
+                getRestTemplate(openIdProvider).postForObject(
                     authorizationInfoUrl,
                     authorizationInfoRequest,
                     String::class.java
@@ -87,7 +99,7 @@ object TokenResolver {
             }
             val tokenRequest = HttpEntity(tokenRequestParameters, httpHeaders)
 
-            val tokenResponse = restTemplate.postForObject(
+            val tokenResponse = getRestTemplate(openIdProvider).postForObject(
                 tokenUrl,
                 tokenRequest,
                 TokenResponse::class.java
@@ -128,7 +140,7 @@ object TokenResolver {
             }
             val request = HttpEntity(tokenRequestParameters, httpHeaders)
 
-            return restTemplate.postForObject(
+            return getRestTemplate(openIdProvider).postForObject(
                 refreshUrl,
                 request,
                 TokenResponse::class.java

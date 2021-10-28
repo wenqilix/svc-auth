@@ -11,11 +11,13 @@ import org.junit.jupiter.api.Test
 
 class TokenBuilderTests {
     val mockClaims = mapOf("foo" to "bar")
-    val jwk = RsaJwkGenerator.generateJwk(4096)
+    val signingJwk = RsaJwkGenerator.generateJwk(4096).let {
+        it.algorithm = AlgorithmIdentifiers.RSA_USING_SHA512
+        it
+    }
 
     val tokenBuilder = TokenBuilder(null)
-        .setSigningKey(jwk.privateKey)
-        .setSigningAlgorithm(AlgorithmIdentifiers.RSA_USING_SHA512)
+        .setSigningJwk(signingJwk)
 
     @Test
     fun `build token successfully`() {
@@ -45,7 +47,7 @@ class TokenBuilderTests {
     @Test
     fun `build token with expiration setted`() {
         val result = tokenBuilder
-            .setExpiration(1 * 60 * 1000)
+            .setExpiration(1 * 60 * 1000L)
             .build(mockClaims)
 
         val parsedToken = parseToken(result)
@@ -110,10 +112,12 @@ class TokenBuilderTests {
 
     @Test
     fun `build token with encryption`() {
+        val encryptionJwk = RsaJwkGenerator.generateJwk(4096)
+        encryptionJwk.algorithm = KeyManagementAlgorithmIdentifiers.RSA_OAEP_256
+
         val result = tokenBuilder
-            .setEncryptionAlgorithm(KeyManagementAlgorithmIdentifiers.RSA_OAEP_256)
             .setEncryptionMethod(ContentEncryptionAlgorithmIdentifiers.AES_256_CBC_HMAC_SHA_512)
-            .setEncryptionKey(jwk.publicKey)
+            .setEncryptionJwk(encryptionJwk)
             .build(mockClaims)
 
         val tokenBreakdown = result.split(".")
@@ -121,7 +125,7 @@ class TokenBuilderTests {
 
         val parsedToken = JwtConsumerBuilder()
             .setSkipSignatureVerification()
-            .setDecryptionKey(jwk.privateKey)
+            .setDecryptionKey(encryptionJwk.privateKey)
             .build()
             .processToClaims(result)
             .getClaimsMap()

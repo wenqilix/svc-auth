@@ -57,6 +57,8 @@ class OpenIdProvider {
     lateinit var host: String
     lateinit var clientId: String
     lateinit var redirectUri: String
+    var proxyHost: String? = null
+    var proxyPort: Int = 3128
     var token: OpenIdProviderToken = OpenIdProviderToken()
     var authorizeEndpoint: String = "/authorize"
     var tokenEndpoint: String = "/token"

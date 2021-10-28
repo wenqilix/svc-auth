@@ -3,6 +3,7 @@ package auth.service
 import auth.model.openid.TokenResponse
 import auth.util.helper.OpenIdProvider
 import auth.util.jwt.TokenParser
+import org.jose4j.http.Get
 import org.jose4j.jwa.AlgorithmConstraints
 import org.jose4j.jwa.AlgorithmConstraints.ConstraintType.PERMIT
 import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers
@@ -11,6 +12,8 @@ import org.jose4j.jwk.JsonWebKey.OutputControlLevel
 import org.jose4j.jwk.PublicJsonWebKey
 import org.jose4j.jws.AlgorithmIdentifiers
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.InetSocketAddress
+import java.net.Proxy
 
 abstract class BaseOpenIdTokenService<T> {
     object AlgorithmContraint {
@@ -48,7 +51,14 @@ abstract class BaseOpenIdTokenService<T> {
                 .build()
                 .encode()
                 .toUriString()
-            HttpsJwks(jwksUrl)
+            val httpsJwks = HttpsJwks(jwksUrl)
+            openIdProvider?.proxyHost?.let {
+                val proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress(it, openIdProvider!!.proxyPort))
+                val get = Get()
+                get.setHttpProxy(proxy)
+                httpsJwks.setSimpleHttpGet(get)
+            }
+            httpsJwks
         }
     }
 

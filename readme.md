@@ -29,6 +29,8 @@
 | APP_SINGPASS_SERVICE_PROVIDER_LOGIN_URL                        | Login(callback) url of the app using svc-auth |
 | APP_SINGPASS_OPEN_ID_PROVIDER_HOST                             | Singpass url domain                                    |
 | APP_SINGPASS_OPEN_ID_PROVIDER_CLIENT_ID                        | Client Id given by Singpass during onboarding          |
+| APP_SINGPASS_OPEN_ID_PROVIDER_PROXY_HOST                       | proxy host to resolve token with Singpass              |
+| APP_SINGPASS_OPEN_ID_PROVIDER_PROXY_PORT                       | proxy port to resolve token with Singpass              |
 | APP_SINGPASS_OPEN_ID_PROVIDER_REDIRECT_URI                     | This is the URI to which the Singpass authCode response should be sent. e.g. https://svc.auth/sp/cb |
 | APP_SINGPASS_OPEN_ID_PROVIDER_AUTHORIZE_ENDPOINT               | Endpoint to obtain an authorization code which will be later used to exchange with Singpass to get ID token |
 | APP_SINGPASS_OPEN_ID_PROVIDER_TOKEN_ENDPOINT                   | Endpoint to obtain an ID token and access token |
@@ -46,6 +48,8 @@
 | APP_CORPPASS_SERVICE_PROVIDER_LOGIN_URL                        | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_HOST                             | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_CLIENT_ID                        | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_PROXY_HOST                       | Same as Singpass but for Corppass                      |
+| APP_CORPPASS_OPEN_ID_PROVIDER_PROXY_PORT                       | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_REDIRECT_URI                     | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_AUTHORIZE_ENDPOINT               | Same as Singpass but for Corppass                      |
 | APP_CORPPASS_OPEN_ID_PROVIDER_TOKEN_ENDPOINT                   | Same as Singpass but for Corppass                      |

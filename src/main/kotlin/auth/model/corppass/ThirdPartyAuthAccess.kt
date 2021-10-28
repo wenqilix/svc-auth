@@ -19,6 +19,10 @@ data class ThirdPartyAuthAccess(
             ThirdPartyClient(client)
         }.toMutableList()
     )
+    constructor(json: String) : this() {
+        val mapper = ObjectMapper()
+        clients = mapper.readValue(json, this::class.java).clients
+    }
 
     fun toMap(): Map<String, Any?> {
         return mapOf(

@@ -2,9 +2,10 @@ package auth.util.jwt
 
 import auth.util.helper.Plugin
 import org.jose4j.jwe.JsonWebEncryption
+import org.jose4j.jwk.JsonWebKey
+import org.jose4j.jwk.PublicJsonWebKey
 import org.jose4j.jws.JsonWebSignature
 import org.jose4j.jwt.JwtClaims
-import java.security.Key
 
 const val MILLISECONDS_IN_MINUTE = 60_000
 
@@ -13,28 +14,28 @@ class TokenBuilder(val plugin: Plugin?) {
     private val jws = JsonWebSignature()
     private val jwe = JsonWebEncryption()
 
-    fun setSigningKey(value: Key): TokenBuilder {
-        jws.setKey(value)
+    fun setSigningJwk(jwk: PublicJsonWebKey): TokenBuilder {
+        jws.setKey(jwk.privateKey)
+        jws.setAlgorithmHeaderValue(jwk.algorithm)
+        jwk.keyId?.let {
+            jws.setKeyIdHeaderValue(jwk.keyId)
+        }
         return this
     }
 
-    fun setSigningAlgorithm(value: String): TokenBuilder {
-        jws.setAlgorithmHeaderValue(value)
+    fun setSigningHeader(name: String, value: String): TokenBuilder {
+        jws.setHeader(name, value)
         return this
     }
 
-    fun setEncryptionKey(value: Key): TokenBuilder {
-        jwe.setKey(value)
+    fun setEncryptionJwk(jwk: JsonWebKey): TokenBuilder {
+        jwe.setKey(jwk.key)
+        jwe.setAlgorithmHeaderValue(jwk.algorithm)
         return this
     }
 
     fun setEncryptionMethod(value: String): TokenBuilder {
         jwe.setEncryptionMethodHeaderParameter(value)
-        return this
-    }
-
-    fun setEncryptionAlgorithm(value: String): TokenBuilder {
-        jwe.setAlgorithmHeaderValue(value)
         return this
     }
 
